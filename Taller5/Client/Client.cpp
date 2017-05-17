@@ -364,15 +364,6 @@ int main()
 
 	sf::Clock frameClock;//Preparem el temps
 
-	sf::Texture texture3;
-	if (!texture3.loadFromFile("../Resources/Fucsia.png")) {
-		std::cout << "Can't load the image file" << std::endl;
-		return -1;
-	}
-	sf::Sprite fucsia; // enemic
-	fucsia.setTexture(texture3);
-	fucsia.setOrigin(20, 20);
-
 	//TEXT
 	sf::Font font;
 	if (!font.loadFromFile("../Resources/Samurai.ttf"))
@@ -397,9 +388,6 @@ int main()
 
 	thread.launch();																	// Comencem thread receive
 
-	//int left = 0;
-	//int right = 1;
-
 	while (window.isOpen())
 	{
 		sf::Event event; //Si no la finestra no detecta el ratolí i no es pot moure
@@ -420,7 +408,7 @@ int main()
 					OutputMemoryBitStream output;
 					output.Write(HELLO, TYPE_SIZE);
 					sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
-					
+
 					//timerConnect.Stop();
 				}
 				timerConnect.Start(5000);
@@ -454,7 +442,7 @@ int main()
 						player[1].animation.push_back(attackAnimationBot1T);
 						player[1].animation.push_back(idleAnimation1B);
 					}
-					else 
+					else
 					{
 						player[0].top = &p1Top;
 						player[0].bot = &p1Bot;
@@ -477,7 +465,7 @@ int main()
 
 					com.pop();
 				}
-					break;
+							break;
 
 				case CONNECTION: {
 
@@ -485,38 +473,19 @@ int main()
 					player[1].x = com.front().position;
 					player[1].originalX = player[1].x;
 
-					//player[0].top->setPostion(sf::Vector2f(player[0].x, player[0].y));
 					player[0].top->play(player[0].animation[Idle]);
 
-					//player[0].bot->setPosition(sf::Vector2f(player[0].x, player[0].y + 275));
 					player[0].bot->play(player[0].animation[Leg]);
 
-					//player[1].top->setPostion(sf::Vector2f(player[1].x, player[1].y));
 					player[1].top->play(player[1].animation[Idle]);
 
-					//player[1].bot->setPosition(sf::Vector2f(player[1].x, player[1].y + 275));
 					player[1].bot->play(player[1].animation[Leg]);
 					// set up AnimatedSprite
-
-					//p1Top.setPosition(sf::Vector2f(player[left].x /*- 325*/, player[0].y));
-					//p1Top.play(idleAnimation1T);
-
-					//// set up AnimatedSprite					
-					//p1Bot.setPosition(sf::Vector2f(player[left].x /*- 325*/, player[0].y + 275)); //275 d'alçada per compensar amb la cintura
-					//p1Bot.play(idleAnimation1B);
-
-					//// set up AnimatedSprite					
-					//p2Bot.setPosition(sf::Vector2f(player[right].x /*- 325*/, player[1].y + 275)); //275 d'alçada per compensar amb la cintura
-					//p2Bot.play(idleAnimation2B);
-
-					//// set up AnimatedSprite
-					//p2Top.setPosition(sf::Vector2f(player[right].x /*- 325*/, player[1].y));
-					//p2Top.play(idleAnimation2T);
 
 					com.pop();
 
 				}
-					break;
+								 break;
 				}
 			}
 			if (player[0].x != 0 && player[1].x != 0)
@@ -529,17 +498,19 @@ int main()
 				//std::cout << "play " << player[0].x << " " << player[1].x << std::endl;
 			}
 		}
-			break;
+					  break;
 
 		case send: {}
-			break;
+				   break;
 
 		case play: {
 
 			//-- MOVEMENT --//
 			// TODO: canviar a window event key
-			sf::Keyboard key;
-			if (key.isKeyPressed(sf::Keyboard::Right)) {
+			//sf::Keyboard key;
+			//if (key.isKeyPressed(sf::Keyboard::Right)) {
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Right)
+			{
 				int movement = 2;
 				int distance = player[1].x - (player[0].x + movement);
 				if (distance < 0) distance = -distance;
@@ -551,11 +522,11 @@ int main()
 						player[0].accum.back().delta += movement;
 					}
 				}
-				// TODO: vigilar que no xoquin amb el enemic
-				//p1Bot.play(pas1B);
 
 			}
-			if (key.isKeyPressed(sf::Keyboard::Left)) {
+			//if (key.isKeyPressed(sf::Keyboard::Left)) {
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Left)
+			{
 				int movement = -2;
 				int distance = player[1].x - (player[0].x + movement);
 				if (distance < 0) distance = -distance;
@@ -567,16 +538,11 @@ int main()
 						player[0].accum.back().delta += movement;
 					}
 				}
-				//p1Top.play(attackAnimationTop1T);
 			}
 
-			if (key.isKeyPressed(sf::Keyboard::Z) && player[0].attack == 0) {
-				/*if (!left) {
-					p1Top.play(attackAnimationTop1T);
-				}
-				else {
-					p2Top.play(attackAnimationTop2T);
-				}*/
+			//if (key.isKeyPressed(sf::Keyboard::Z) && player[0].attack == 0) {
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Z)
+			{
 				player[0].attack = 1;
 
 				player[0].top->play(player[0].animation[player[0].attack + 1]);
@@ -589,13 +555,9 @@ int main()
 				sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
 			}
 
-			if (key.isKeyPressed(sf::Keyboard::X) && player[0].attack == 0) {
-				/*if (!left) {
-					p1Top.play(attackAnimationMid1T);
-				}
-				else {
-					p2Top.play(attackAnimationMid2T);
-				}*/
+			//if (key.isKeyPressed(sf::Keyboard::X) && player[0].attack == 0) {
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::X)
+			{
 				player[0].attack = 2;
 
 				player[0].top->play(player[0].animation[player[0].attack + 1]);
@@ -608,13 +570,9 @@ int main()
 				sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
 			}
 
-			if (key.isKeyPressed(sf::Keyboard::C) && player[0].attack == 0) {
-				/*if (!left) {
-					p1Top.play(attackAnimationBot1T);
-				}
-				else {
-					p2Top.play(attackAnimationBot2T);
-				}*/
+			//if (key.isKeyPressed(sf::Keyboard::C) && player[0].attack == 0) {
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::C)
+			{
 				player[0].attack = 3;
 
 				player[0].top->play(player[0].animation[player[0].attack + 1]);
@@ -629,7 +587,7 @@ int main()
 
 			if (player[0].attack != 0)
 			{
-				
+
 				if (player[0].top->m_currentFrame == 12)
 				{
 					OutputMemoryBitStream output;
@@ -640,33 +598,7 @@ int main()
 					sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
 					player[0].attack = 0;
 				}
-				/*if (!left) 
-				{
-					if (p1Top.m_currentFrame == 12) {
-						OutputMemoryBitStream output;
-						output.Write(ATTACK, TYPE_SIZE);
-						output.Write(player[0].id, ID_SIZE);
-						output.Write(player[0].attack, ATTACK_SIZE);
 
-						sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
-						player[0].attack = 0;
-					}
-					
-				}
-				else
-				{
-					if (p2Top.m_currentFrame == 12) {
-						OutputMemoryBitStream output;
-						output.Write(ATTACK, TYPE_SIZE);
-						output.Write(player[0].id, ID_SIZE);
-						output.Write(player[0].attack, ATTACK_SIZE);
-
-						sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
-						player[0].attack = 0;
-					}
-					
-				}*/
-				
 			}
 
 			//-- ACCUMULATED --//
@@ -699,9 +631,9 @@ int main()
 					Accum accumtmp;										// Creo nou acumulat
 					if (player[0].accum.back().id == 15) accumtmp.id = 0;	// Si el ultim acumulat te id 15, el nou torna a 0
 					else accumtmp.id = player[0].accum.back().id + 1;     // Sino, el id es un mes que l'anterior
-					
+
 					player[0].accum.push_back(accumtmp);
-				}	
+				}
 				timerAccum.Start(ACCUMTIME);
 			}
 
@@ -722,15 +654,13 @@ int main()
 			}
 
 			//-- COMMANDS --//
-			
+
 			if (!com.empty()) {
-				//int serverCase = 0; 
-				//serverCommands.front().Read(&serverCase, TYPE_SIZE);
 				switch (com.front().type) {
 
 				case HELLO: { // NO TINDRIA QUE REBRE 1
 				}
-					break;
+							break;
 
 				case CONNECTION: {
 					OutputMemoryBitStream output;
@@ -756,25 +686,23 @@ int main()
 						{
 							if (player[0].accum[i].id == com.front().accum.id)		// Si troba el misatge de acumulacio
 							{
-								for (int j = 0; j < player[0].accum.size()-i; j++)		// Recorre els misatges que hi havien fins ara
+								for (int j = 0; j < player[0].accum.size() - i; j++)		// Recorre els misatges que hi havien fins ara
 								{
 									player[0].accum.erase(player[0].accum.begin());					// Borrals
 								}
 								break;
 							}
 						}
-					} 
+					}
 					else							// Si es el id del contrincant, simula el moviment
 					{
 						Accum accumtmp = com.front().accum;
-						//accumtmp.absolute = player[1].x + accumtmp.delta;
 						player[1].accum.push_back(accumtmp);	// Afegir acumulat a la cua
 					}
 
-					com.pop();
-					//serverCommands.pop();					
+					com.pop();		
 				}
-				break;
+							   break;
 
 				case ATTACK:
 				{
@@ -785,40 +713,6 @@ int main()
 					player[1].top->play(player[1].animation[player[1].attack + 1]);
 					player[1].top->m_currentFrame++;
 
-					/*if (!left) {
-						if (player[1].attack == 1)
-						{
-							p2Top.play(attackAnimationTop2T);
-							p2Top.m_currentFrame++;
-						}
-						else if (player[1].attack == 2)
-						{
-							p2Top.play(attackAnimationMid2T);
-							p2Top.m_currentFrame++;
-						}
-						else if (player[1].attack == 3)
-						{
-							p2Top.play(attackAnimationBot2T);
-							p2Top.m_currentFrame++;
-						}												
-					}
-					else {
-						if (player[1].attack == 1)
-						{
-							p1Top.play(attackAnimationTop1T);
-							p1Top.m_currentFrame++;
-						}
-						else if (player[1].attack == 2)
-						{
-							p1Top.play(attackAnimationMid1T);
-							p1Top.m_currentFrame++;
-						}
-						else if (player[1].attack == 3)
-						{
-							p1Top.play(attackAnimationBot1T);
-							p1Top.m_currentFrame++;
-						}
-					}*/
 					com.pop();
 				}
 				break;
@@ -826,7 +720,7 @@ int main()
 				case SCORE:
 				{
 					player[com.front().id].score++;
-					
+
 					text1.setString(std::to_string(player[0].score));
 					text2.setString(std::to_string(player[1].score));
 
@@ -846,8 +740,8 @@ int main()
 						for (int i = 0; i < player[j].accum.size(); i++)
 						{
 							player[j].accum.erase(player[j].accum.begin());
-						}					
-					}				
+						}
+					}
 					Accum accumtmp;
 					player[0].accum.push_back(accumtmp);
 
@@ -861,7 +755,7 @@ int main()
 				}
 			}
 		}
-			break;
+				   break;
 		}
 
 		window.draw(fons);	// Pintem el fons
@@ -876,44 +770,25 @@ int main()
 
 		window.draw(Boira);
 		window.draw(Boira2);
-		//if (player.size() > 0) { 
-		//p1Bot.play(*currentAnimation1B);
 
-		//
+		if (state == play)
+		{
+			player[0].top->update(frameTime);
+			player[0].top->setPosition(player[0].x, player[0].y);
+			window.draw(*player[0].top);
 
-		player[0].top->update(frameTime);
-		player[0].top->setPosition(player[0].x, player[0].y);
-		window.draw(*player[0].top);
+			player[0].bot->update(frameTime);
+			player[0].bot->setPosition(player[0].x, player[0].y + 275);
+			window.draw(*player[0].bot);
 
-		player[0].bot->update(frameTime);
-		player[0].bot->setPosition(player[0].x, player[0].y + 275);
-		window.draw(*player[0].bot);
+			player[1].top->update(frameTime);
+			player[1].top->setPosition(player[1].x, player[1].y);
+			window.draw(*player[1].top);
 
-		player[1].top->update(frameTime);
-		player[1].top->setPosition(player[1].x, player[1].y);
-		window.draw(*player[1].top);
-
-		player[1].bot->update(frameTime);
-		player[1].bot->setPosition(player[1].x, player[1].y + 275);
-		window.draw(*player[1].bot);
-
-		//p1Bot.update(frameTime);
-		//p1Bot.setPosition(player[left].x, player[left].y + 275);
-		//window.draw(p1Bot);
-		////p1Top.play(*currentAnimation1T);
-		//p1Top.update(frameTime);
-		//p1Top.setPosition(player[left].x, player[left].y);
-		//window.draw(p1Top);
-
-		////P2
-		//p2Bot.update(frameTime);
-		//p2Bot.setPosition(player[right].x + 150, player[right].y + 275); //Aquests 150 en x son la desviació del sprite de les cames
-		//window.draw(p2Bot);
-
-		//p2Top.update(frameTime);
-		//p2Top.setPosition(player[right].x , player[right].y);
-		//window.draw(p2Top);// pintem el jugador
-
+			player[1].bot->update(frameTime);
+			player[1].bot->setPosition(player[1].x, player[1].y + 275);
+			window.draw(*player[1].bot);
+		}
 		window.draw(herba);
 
 		PSAnimated.update(frameTime); //Actualitzem el sistema de particules

@@ -307,7 +307,7 @@ int main()
 					int threshold = 6; // Maximum error able to forgive
 					for (int i = -threshold; i < threshold; i++)
 					{
-						if (accumtmp.absolute > LEFT_LIMIT && accumtmp.absolute < RIGHT_LIMIT) {
+						if (accumtmp.absolute > LEFT_LIMIT && accumtmp.absolute < RIGHT_LIMIT) { // TODO: check distancia cosos
 							if ((player[com.front().id].x + accumtmp.delta + i) == accumtmp.absolute) { // si esta dins de la posicio que estem disposats a accpetar
 								player[com.front().id].x = accumtmp.absolute;
 								player[com.front().id].accum.push_back(accumtmp);

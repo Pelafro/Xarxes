@@ -1,22 +1,21 @@
 ﻿  Client.cpp
-D:\SourceHunters\Taller5\ChatLib\Game.h(326): warning C4244: '=': conversion from 'float' to 'clock_t', possible loss of data
-D:\SourceHunters\Taller5\ChatLib\Game.h(381): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
-D:\SourceHunters\Taller5\ChatLib\Game.h(499): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\pjandula\Documents\GitHub\Xarxes\Taller5\ChatLib\Game.h(326): warning C4244: '=': conversion from 'float' to 'clock_t', possible loss of data
+C:\Users\pjandula\Documents\GitHub\Xarxes\Taller5\ChatLib\Game.h(381): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\pjandula\Documents\GitHub\Xarxes\Taller5\ChatLib\Game.h(499): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
 Client.cpp(352): warning C4305: 'argument': truncation from 'double' to 'float'
 Client.cpp(353): warning C4305: 'argument': truncation from 'double' to 'float'
 Client.cpp(354): warning C4305: 'argument': truncation from 'double' to 'float'
 Client.cpp(355): warning C4305: 'argument': truncation from 'double' to 'float'
 Client.cpp(356): warning C4305: 'argument': truncation from 'double' to 'float'
-Client.cpp(873): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-Client.cpp(875): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-Client.cpp(885): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-Client.cpp(889): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-Client.cpp(893): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-Client.cpp(897): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-Client.cpp(541): warning C4101: 'key': unreferenced local variable
+Client.cpp(767): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+Client.cpp(769): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+Client.cpp(777): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+Client.cpp(781): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+Client.cpp(785): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+Client.cpp(789): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   Generating code
   All 867 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Finished generating code
-ChatLib.lib(Send.obj) : warning LNK4099: PDB 'ChatLib.pdb' was not found with 'ChatLib.lib(Send.obj)' or at 'D:\SourceHunters\Taller5\x64\Release\ChatLib.pdb'; linking object as if no debug info
-  Client.vcxproj -> D:\SourceHunters\Taller5\x64\Release\Client.exe
-  Client.vcxproj -> D:\SourceHunters\Taller5\x64\Release\Client.pdb (Full PDB)
+ChatLib.lib(Send.obj) : warning LNK4099: PDB 'ChatLib.pdb' was not found with 'ChatLib.lib(Send.obj)' or at 'C:\Users\pjandula\Documents\GitHub\Xarxes\Taller5\x64\Release\ChatLib.pdb'; linking object as if no debug info
+  Client.vcxproj -> C:\Users\pjandula\Documents\GitHub\Xarxes\Taller5\x64\Release\Client.exe
+  Client.vcxproj -> C:\Users\pjandula\Documents\GitHub\Xarxes\Taller5\x64\Release\Client.pdb (Full PDB)
