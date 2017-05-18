@@ -12,7 +12,7 @@
 #define POSICIO_INICIAL2 800
 #define POSICIO_Y 150
 
-#define DISTANCIA_BODY 70
+
 
 
 // Protocol: https://docs.google.com/spreadsheets/d/152EPpd8-f7fTDkZwQlh1OCY5kjCTxg6-iZ2piXvEgeg/edit?usp=sharing
@@ -37,7 +37,7 @@ int main()
 {
 	//-- UDP --//
 
-	sf::IpAddress ip = sf::IpAddress::IpAddress("127.0.0.1"); //sf::IpAddress::getLocalAddress();
+	sf::IpAddress ip = sf::IpAddress::IpAddress("192.168.122.85"); //sf::IpAddress::getLocalAddress();
 	unsigned short serverPort = 5000;
 	sf::UdpSocket socket;
 	std::queue<InputMemoryBitStream> serverCommands;			// Misatges del servidor per anar executant
@@ -314,20 +314,20 @@ int main()
 	//Animation idle
 	Animation idleAnimation2B;
 	idleAnimation2B.setSpriteSheet(p2TextBot);
-	idleAnimation2B.addFrame(sf::IntRect(0, 0, 500, 380));
+	idleAnimation2B.addFrame(sf::IntRect(0, 0, 650, 380));
 
 	//Animation Pas Ofensiu
 	Animation pas2B;
 	pas2B.setSpriteSheet(p2TextBot);
-	pas2B.addFrame(sf::IntRect(502 * 1, 382 * 0, 500, 380));
-	pas2B.addFrame(sf::IntRect(502 * 0, 382 * 1, 500, 380));
-	pas2B.addFrame(sf::IntRect(502 * 1, 382 * 1, 500, 380));
-	pas2B.addFrame(sf::IntRect(502 * 0, 382 * 2, 500, 380));
-	pas2B.addFrame(sf::IntRect(502 * 1, 382 * 2, 500, 380));//-·--·--·--
-	pas2B.addFrame(sf::IntRect(502 * 0, 382 * 2, 500, 380));
-	pas2B.addFrame(sf::IntRect(502 * 1, 382 * 1, 500, 380));
-	pas2B.addFrame(sf::IntRect(502 * 0, 382 * 1, 500, 380));
-	pas2B.addFrame(sf::IntRect(502 * 1, 382 * 0, 500, 380));
+	pas2B.addFrame(sf::IntRect(652 * 1, 382 * 0, 650, 380));
+	pas2B.addFrame(sf::IntRect(652 * 0, 382 * 1, 650, 380));
+	pas2B.addFrame(sf::IntRect(652 * 1, 382 * 1, 650, 380));
+	pas2B.addFrame(sf::IntRect(652 * 0, 382 * 2, 650, 380));
+	pas2B.addFrame(sf::IntRect(652 * 1, 382 * 2, 650, 380));//-·--·--·--
+	pas2B.addFrame(sf::IntRect(652 * 0, 382 * 2, 650, 380));
+	pas2B.addFrame(sf::IntRect(652 * 1, 382 * 1, 650, 380));
+	pas2B.addFrame(sf::IntRect(652 * 0, 382 * 1, 650, 380));
+	pas2B.addFrame(sf::IntRect(652 * 1, 382 * 0, 650, 380));
 
 	//Partycle System
 
@@ -388,6 +388,8 @@ int main()
 
 	thread.launch();																	// Comencem thread receive
 
+	bool attacking = false;
+
 	while (window.isOpen())
 	{
 		sf::Event event; //Si no la finestra no detecta el ratolí i no es pot moure
@@ -395,8 +397,11 @@ int main()
 		{
 			if (event.type == sf::Event::Closed)
 				window.close();
-			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
-				window.close();
+			if (event.type == sf::Event::KeyPressed )
+				if (event.key.code == sf::Keyboard::Escape)
+				{
+					window.close();
+				}				
 		}
 
 		sf::Time frameTime = frameClock.restart();
@@ -507,89 +512,110 @@ int main()
 
 			//-- MOVEMENT --//
 			// TODO: canviar a window event key
-			//sf::Keyboard key;
-			//if (key.isKeyPressed(sf::Keyboard::Right)) {
-			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Right)
-			{
-				int movement = 2;
-				int distance = player[1].x - (player[0].x + movement);
-				if (distance < 0) distance = -distance;
-				if (distance > DISTANCIA_BODY)
+			sf::Keyboard key;
+			if (event.type == sf::Event::KeyPressed) {
+				//if (key.isKeyPressed(sf::Keyboard::Right)) 
+				if (event.key.code == sf::Keyboard::Right)
 				{
-					if ((player[0].x + movement) < RIGHT_LIMIT)
+					int movement = 2;
+					int distance = player[1].x - (player[0].x + movement);
+					if (distance < 0) distance = -distance;
+					if (distance > DISTANCIA_BODY)
 					{
-						player[0].x += movement;
-						player[0].accum.back().delta += movement;
+						if ((player[0].x + movement) < RIGHT_LIMIT)
+						{
+							player[0].x += movement;
+							player[0].accum.back().delta += movement;
+						}
+					}
+
+				}
+				//if (key.isKeyPressed(sf::Keyboard::Left)) 
+				else if (event.key.code == sf::Keyboard::Left)
+				{
+					int movement = -2;
+					int distance = player[1].x - (player[0].x + movement);
+					if (distance < 0) distance = -distance;
+					if (distance > DISTANCIA_BODY)
+					{
+						if ((player[0].x + movement) > LEFT_LIMIT)
+						{
+							player[0].x += movement;
+							player[0].accum.back().delta += movement;
+						}
 					}
 				}
-
 			}
-			//if (key.isKeyPressed(sf::Keyboard::Left)) {
-			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Left)
+			if (event.type == sf::Event::KeyReleased)
 			{
-				int movement = -2;
-				int distance = player[1].x - (player[0].x + movement);
-				if (distance < 0) distance = -distance;
-				if (distance > DISTANCIA_BODY)
-				{
-					if ((player[0].x + movement) > LEFT_LIMIT)
+				//if (key.isKeyPressed(sf::Keyboard::Z) && player[0].attack == 0 && !attacking)
+					if (event.key.code == sf::Keyboard::Z && !attacking && player[0].attack == 0)
 					{
-						player[0].x += movement;
-						player[0].accum.back().delta += movement;
+						attacking = true;
+						std::cout << player[0].attack;
+						player[0].attack = 1;
+
+						player[0].top->play(player[0].animation[player[0].attack]);
+
+						OutputMemoryBitStream output;
+						output.Write(ATTACK, TYPE_SIZE);
+						output.Write(player[0].id, ID_SIZE);
+						output.Write(player[0].attack, ATTACK_SIZE);
+
+						sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
+
 					}
+					else if (player[0].attack != 0 && player[0].top->getAnimation() != &player[0].animation[Top])
+					{
+						player[0].attack = 0;
+					}
+
+				//if (key.isKeyPressed(sf::Keyboard::X) && player[0].attack == 0 && !attacking)
+				else if (event.key.code == sf::Keyboard::X && !attacking && player[0].attack == 0)
+				{
+					attacking = true;
+					player[0].attack = 2;
+
+					player[0].top->play(player[0].animation[player[0].attack]);
+
+					OutputMemoryBitStream output;
+					output.Write(ATTACK, TYPE_SIZE);
+					output.Write(player[0].id, ID_SIZE);
+					output.Write(player[0].attack, ATTACK_SIZE);
+
+					sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
+				}
+				else if (player[0].attack != 0 && player[0].top->getAnimation() != &player[0].animation[Mid])
+				{
+					player[0].attack = 0;
+				}
+
+				//if (key.isKeyPressed(sf::Keyboard::C) && player[0].attack == 0 && !attacking)
+				else if (event.key.code == sf::Keyboard::C && !attacking && player[0].attack == 0)
+				{
+					attacking = true;
+					player[0].attack = 3;
+
+					player[0].top->play(player[0].animation[player[0].attack]);
+
+					OutputMemoryBitStream output;
+					output.Write(ATTACK, TYPE_SIZE);
+					output.Write(player[0].id, ID_SIZE);
+					output.Write(player[0].attack, ATTACK_SIZE);
+
+					sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
+				}
+				else if (player[0].attack != 0 && player[0].top->getAnimation() != &player[0].animation[Bot])
+				{
+					player[0].attack = 0;
 				}
 			}
-
-			//if (key.isKeyPressed(sf::Keyboard::Z) && player[0].attack == 0) {
-			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Z)
-			{
-				player[0].attack = 1;
-
-				player[0].top->play(player[0].animation[player[0].attack + 1]);
-
-				OutputMemoryBitStream output;
-				output.Write(ATTACK, TYPE_SIZE);
-				output.Write(player[0].id, ID_SIZE);
-				output.Write(player[0].attack, ATTACK_SIZE);
-
-				sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
-			}
-
-			//if (key.isKeyPressed(sf::Keyboard::X) && player[0].attack == 0) {
-			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::X)
-			{
-				player[0].attack = 2;
-
-				player[0].top->play(player[0].animation[player[0].attack + 1]);
-
-				OutputMemoryBitStream output;
-				output.Write(ATTACK, TYPE_SIZE);
-				output.Write(player[0].id, ID_SIZE);
-				output.Write(player[0].attack, ATTACK_SIZE);
-
-				sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
-			}
-
-			//if (key.isKeyPressed(sf::Keyboard::C) && player[0].attack == 0) {
-			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::C)
-			{
-				player[0].attack = 3;
-
-				player[0].top->play(player[0].animation[player[0].attack + 1]);
-
-				OutputMemoryBitStream output;
-				output.Write(ATTACK, TYPE_SIZE);
-				output.Write(player[0].id, ID_SIZE);
-				output.Write(player[0].attack, ATTACK_SIZE);
-
-				sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
-			}
-
-			if (player[0].attack != 0)
-			{
+			/*if (player[0].attack != 0)
+			{*/
 
 				if (player[0].top->m_currentFrame == 12)
 				{
+					attacking = false;
 					OutputMemoryBitStream output;
 					output.Write(ATTACK, TYPE_SIZE);
 					output.Write(player[0].id, ID_SIZE);
@@ -599,7 +625,7 @@ int main()
 					player[0].attack = 0;
 				}
 
-			}
+			//}
 
 			//-- ACCUMULATED --//
 
@@ -681,7 +707,7 @@ int main()
 				case MOVEMENT: {
 
 					if (com.front().id == player[0].id)				// Si es el id propi, comfirma el moviment
-					{	// TODO: Check de trampas o problemes
+					{	
 						for (int i = 0; i < player[0].accum.size(); i++)	// Recorre tots els misatges de acumulacio
 						{
 							if (player[0].accum[i].id == com.front().accum.id)		// Si troba el misatge de acumulacio
@@ -706,11 +732,9 @@ int main()
 
 				case ATTACK:
 				{
-
-
 					player[1].attack = com.front().position;
 
-					player[1].top->play(player[1].animation[player[1].attack + 1]);
+					player[1].top->play(player[1].animation[player[1].attack]);
 					player[1].top->m_currentFrame++;
 
 					com.pop();
@@ -737,10 +761,11 @@ int main()
 
 					for (int j = 0; j < player.size(); j++)
 					{
-						for (int i = 0; i < player[j].accum.size(); i++)
+						player[j].accum.clear();
+						/*for (int i = 0; i < player[j].accum.size(); i++)
 						{
 							player[j].accum.erase(player[j].accum.begin());
-						}
+						}*/
 					}
 					Accum accumtmp;
 					player[0].accum.push_back(accumtmp);

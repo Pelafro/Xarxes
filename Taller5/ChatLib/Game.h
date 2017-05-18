@@ -18,6 +18,7 @@
 #define RIGHT_LIMIT 1100
 #define PLAYER_LIMIT 70
 #define DISTANCE_ATTACK 200
+#define DISTANCIA_BODY 70
 
 #define TYPE_SIZE 3 
 #define ID_SIZE 1 // Tambien funciona para negatio i positivo

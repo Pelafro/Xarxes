@@ -15,7 +15,7 @@ int main()
 {
 	//-- UDP --//
 
-	sf::IpAddress ip = sf::IpAddress::IpAddress("127.0.0.1");	// sf::IpAddress::getLocalAddress();
+	sf::IpAddress ip = sf::IpAddress::IpAddress("192.168.122.85");	// sf::IpAddress::getLocalAddress();
 	sf::UdpSocket socket;										// El socket del servidor
 	std::queue<InputMemoryBitStream> clientCommands;			// Misatges dels jugadors per anar executant
 	std::queue<Command> com;
@@ -307,7 +307,16 @@ int main()
 					int threshold = 6; // Maximum error able to forgive
 					for (int i = -threshold; i < threshold; i++)
 					{
-						if (accumtmp.absolute > LEFT_LIMIT && accumtmp.absolute < RIGHT_LIMIT) { // TODO: check distancia cosos
+						int distance;
+						if (com.front().id == 0)
+						{
+							distance = accumtmp.absolute - player[1].x;
+						}
+						else {
+							distance = accumtmp.absolute - player[0].x;
+						}
+						if (distance < 0) distance = -distance;
+						if (accumtmp.absolute > LEFT_LIMIT && accumtmp.absolute < RIGHT_LIMIT && distance > DISTANCIA_BODY) {
 							if ((player[com.front().id].x + accumtmp.delta + i) == accumtmp.absolute) { // si esta dins de la posicio que estem disposats a accpetar
 								player[com.front().id].x = accumtmp.absolute;
 								player[com.front().id].accum.push_back(accumtmp);
@@ -333,7 +342,6 @@ int main()
 						}
 					}
 					//accumtmp.absolute = player[com.front().id].x + accumtmp.delta;
-					// TODO: Comprobacions de trampas i limits
 
 					com.pop();
 					
@@ -351,12 +359,18 @@ int main()
 						output.Write(player[com.front().id].attack, ATTACK_SIZE);
 
 						if (com.front().id == 0)
+						{
 							sender.SendMessages(player[1].ip, player[1].port, output.GetBufferPtr(), output.GetByteLength());
+						}
 						else 
+						{
 							sender.SendMessages(player[0].ip, player[0].port, output.GetBufferPtr(), output.GetByteLength());
-
+						}
+							
+						com.pop();
 					}
-					else {
+					else
+					{
 						int distance = player[0].x - player[1].x;
 						if (distance < 0) distance = -distance;
 						if (distance < DISTANCE_ATTACK)
@@ -364,22 +378,33 @@ int main()
 							player[com.front().id].score++;
 
 							player[0].x = player[0].originalX;
-							player[1].x = player[1].originalX;
-
-							player[0].attack = 0;
-							player[1].attack = 0;
+							player[1].x = player[1].originalX;							
 
 							OutputMemoryBitStream output;
 							output.Write(SCORE, TYPE_SIZE);
 							output.Write(player[com.front().id].id, ID_SIZE);
+
+							if (!com.empty())
+							{
+								while (!com.empty())
+								{
+									com.pop();
+								}
+							}
 
 							for (int k = 0; k < player.size(); k++)
 							{
 								sender.SendMessages(player[k].ip, player[k].port, output.GetBufferPtr(), output.GetByteLength());
 							}
 						}
+						else
+						{
+							com.pop();
+						}
+						player[com.front().id].attack = 0;
+						//player[1].attack = 0;
 					}
-					com.pop();
+					
 				}
 					break;
 				}
