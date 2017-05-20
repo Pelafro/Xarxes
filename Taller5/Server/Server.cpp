@@ -15,7 +15,7 @@ int main()
 {
 	//-- UDP --//
 
-	sf::IpAddress ip = sf::IpAddress::IpAddress("192.168.122.85");	// sf::IpAddress::getLocalAddress();
+	sf::IpAddress ip = sf::IpAddress::IpAddress("127.0.0.1");	// sf::IpAddress::getLocalAddress();
 	sf::UdpSocket socket;										// El socket del servidor
 	std::queue<InputMemoryBitStream> clientCommands;			// Misatges dels jugadors per anar executant
 	std::queue<Command> com;

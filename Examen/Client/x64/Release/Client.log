@@ -1,0 +1,11 @@
+﻿  Client.cpp
+E:\Xarxes\Examen\ChatLib\Game.h(327): warning C4244: '=': conversion from 'float' to 'clock_t', possible loss of data
+E:\Xarxes\Examen\ChatLib\Game.h(382): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+E:\Xarxes\Examen\ChatLib\Game.h(500): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+Client.cpp(191): warning C4101: 'key': unreferenced local variable
+  Generating code
+  All 501 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+ChatLib.lib(Send.obj) : warning LNK4099: PDB 'ChatLib.pdb' was not found with 'ChatLib.lib(Send.obj)' or at 'E:\Xarxes\Examen\x64\Release\ChatLib.pdb'; linking object as if no debug info
+  Client.vcxproj -> E:\Xarxes\Examen\x64\Release\Client.exe
+  Client.vcxproj -> E:\Xarxes\Examen\x64\Release\Client.pdb (Full PDB)

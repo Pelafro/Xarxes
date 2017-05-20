@@ -37,7 +37,7 @@ int main()
 {
 	//-- UDP --//
 
-	sf::IpAddress ip = sf::IpAddress::IpAddress("192.168.122.85"); //sf::IpAddress::getLocalAddress();
+	sf::IpAddress ip = sf::IpAddress::IpAddress("127.0.0.1"); //sf::IpAddress::getLocalAddress();
 	unsigned short serverPort = 5000;
 	sf::UdpSocket socket;
 	std::queue<InputMemoryBitStream> serverCommands;			// Misatges del servidor per anar executant
@@ -511,7 +511,6 @@ int main()
 		case play: {
 
 			//-- MOVEMENT --//
-			// TODO: canviar a window event key
 			sf::Keyboard key;
 			if (event.type == sf::Event::KeyPressed) {
 				//if (key.isKeyPressed(sf::Keyboard::Right)) 
@@ -565,7 +564,7 @@ int main()
 						sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
 
 					}
-					else if (player[0].attack != 0 && player[0].top->getAnimation() != &player[0].animation[Top])
+					else if (event.key.code == sf::Keyboard::Z && player[0].attack != 0 && player[0].top->getAnimation() != &player[0].animation[Top])
 					{
 						player[0].attack = 0;
 					}
@@ -585,7 +584,7 @@ int main()
 
 					sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
 				}
-				else if (player[0].attack != 0 && player[0].top->getAnimation() != &player[0].animation[Mid])
+				else if (event.key.code == sf::Keyboard::X && player[0].attack != 0 && player[0].top->getAnimation() != &player[0].animation[Mid])
 				{
 					player[0].attack = 0;
 				}
@@ -605,7 +604,7 @@ int main()
 
 					sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
 				}
-				else if (player[0].attack != 0 && player[0].top->getAnimation() != &player[0].animation[Bot])
+				else if (event.key.code == sf::Keyboard::C && player[0].attack != 0 && player[0].top->getAnimation() != &player[0].animation[Bot])
 				{
 					player[0].attack = 0;
 				}
