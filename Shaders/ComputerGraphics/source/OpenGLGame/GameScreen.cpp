@@ -36,48 +36,48 @@ void GameScreen::OnEntry(void) {
 	m_textUI.rotation = { 0, 0,0 };
 	m_textUI.scale = { 355,15,355 };
 
-	sea.meshRef = &m_app->assetManager.FindMesh("mesh_sea");
+	sea.meshRef = &m_app->assetManager.FindMesh("mesh_plane");
 	sea.materialRef = &m_app->assetManager.FindMaterial("material_sea");
 	m_renderer.Add(&sea);
 
 	// Load player base kart model
-	m_player.meshRef = &m_app->assetManager.FindMesh("mesh_boat");
-	m_player.materialRef = &m_app->assetManager.FindMaterial("material_boat");
+	m_player.meshRef = &m_app->assetManager.FindMesh("mesh_kop");
+	m_player.materialRef = &m_app->assetManager.FindMaterial("material_kop");
 	m_renderer.Add(&m_player);
 
 	// Load the enemies models
 	for (int i = 0; i < MAX_BULLETS; i++) {
-		m_bullets[i].meshRef = &m_app->assetManager.FindMesh("mesh_bullet");
-		m_bullets[i].materialRef = &m_app->assetManager.FindMaterial("material_bullet");
+		m_bullets[i].meshRef = &m_app->assetManager.FindMesh("mesh_column");
+		m_bullets[i].materialRef = &m_app->assetManager.FindMaterial("material_column");
 		m_bullets[i].transform.position = { 0, 10000, 0 };
 		m_renderer.Add(&m_bullets[i]);
 	}
 
 	// Load the enemies models
-	for (int i = 0; i < MAX_ENEMIES; i++) {
+	/*for (int i = 0; i < MAX_ENEMIES; i++) {
 		m_enemies[i].meshRef = &m_app->assetManager.FindMesh("mesh_enemy");
 		m_enemies[i].materialRef = &m_app->assetManager.FindMaterial("material_enemy");
 		m_enemies[i].transform.position = { 0, 10000, 0 };
 		m_enemies->init();
 		m_renderer.Add(&m_enemies[i]);
-	}
+	}*/
 
-	skybox.transform.position = { 0, -700, 0 };
+	/*skybox.transform.position = { 0, -700, 0 };
 	skybox.transform.scale = { 1, 1, 1};
 	skybox.transform.rotation = { 0, 0, 0 };
 	skybox.meshRef = &m_app->assetManager.FindMesh("mesh_skybox");
 	skybox.materialRef = &m_app->assetManager.FindMaterial("material_skybox");
 	skybox.materialRef->materialData->emissive = {0.15, 0.15, 0.3 };
 	skybox.materialRef->materialData->specular = { 1, 1, 1 };
-	m_renderer.Add(&skybox);
+	m_renderer.Add(&skybox);*/
 
-	skybox_bot.transform.position = { 0, -700, 0 };
+	/*skybox_bot.transform.position = { 0, -700, 0 };
 	skybox_bot.transform.scale = { 1, 1, 1 };
 	skybox_bot.meshRef = &m_app->assetManager.FindMesh("mesh_skybox_bot");
 	skybox_bot.materialRef = &m_app->assetManager.FindMaterial("material_skybox");
 	skybox_bot.materialRef->materialData->emissive = { 0.15, 0.15, 0.3 };
 	skybox_bot.materialRef->materialData->specular = { 1, 1, 1 };
-	m_renderer.Add(&skybox_bot);
+	m_renderer.Add(&skybox_bot);*/
 
 	// Init player kart physics
 	m_boat_physics.AddTransform(&m_player.transform);
@@ -91,7 +91,7 @@ void GameScreen::OnEntry(void) {
 	m_renderer.Add(&m_dirLight);
 
 	// Init point lights
-	for (int i = 0; i < MAX_POINT_LIGHTS; i++) {
+	/*for (int i = 0; i < MAX_POINT_LIGHTS; i++) {
 		m_pointLights[i].position = { m_enemies[i].transform.position.x, 90, m_enemies[i].transform.position.z };
 		m_pointLights[i].ambient = { 0.5f, 0.0f, 0.0f };
 		m_pointLights[i].diffuse = { 1.0f, 0.0f, 0.0f };
@@ -100,7 +100,7 @@ void GameScreen::OnEntry(void) {
 		m_pointLights[i].linear = 0.007f;
 		m_pointLights[i].quadratic = 0.0002f;
 		m_renderer.Add(&m_pointLights[i]);
-	}
+	}*/
 
 	// Init spot lights
 	m_spotLights[0].position = { -10,60,0 };
@@ -181,9 +181,9 @@ void GameScreen::CheckBulletsCollisions()
 
 void GameScreen::UpdateLights()
 {	
-	for (int i = 0; i < MAX_POINT_LIGHTS; i++) {
+	/*for (int i = 0; i < MAX_POINT_LIGHTS; i++) {
 		m_pointLights[i].position = { m_enemies[i].transform.position.x, 90, m_enemies[i].transform.position.z};
-	}
+	}*/
 
 	m_spotLights[0].position = m_player.transform.position;
 	m_spotLights[0].direction = m_boat_physics.front;

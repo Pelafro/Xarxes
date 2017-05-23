@@ -30,23 +30,23 @@ void App::Init(void) {
 void App::LoadAssets(void) {
 	clock_t bench = clock();
 	std::cout << "==== LOAD ASSETS BEGIN ====" << std::endl;
-	assetManager.LoadMesh("mesh_skybox", "models/skybox/skybox.obj");
-	assetManager.LoadMesh("mesh_skybox_bot", "models/skybox/skyboxbot.obj");
-	assetManager.LoadMesh("mesh_sea", "models/sea/sea.obj");
-	assetManager.LoadMesh("mesh_boat", "models/boat/boat.obj");
-	assetManager.LoadMesh("mesh_bullet", "models/bullet/bullet.obj");
-	assetManager.LoadMesh("mesh_enemy", "models/enemy/enemy.obj");
+	//assetManager.LoadMesh("mesh_skybox", "models/skybox/skybox.obj");
+	//assetManager.LoadMesh("mesh_skybox_bot", "models/skybox/skyboxbot.obj");
+	assetManager.LoadMesh("mesh_plane", "models/sea/plane.obj");
+	assetManager.LoadMesh("mesh_kop", "models/boat/kop.obj");
+	assetManager.LoadMesh("mesh_column", "models/bullet/column.obj");
+	//assetManager.LoadMesh("mesh_enemy", "models/enemy/enemy.obj");
 	std::cout << "Meshes loaded (" << ((clock() - bench) / 1000.0f) << " seconds)" << std::endl;
 	bench = clock();
 
 	assetManager.LoadMaterial("material_red", "images/plch/red.jpg");
 	assetManager.LoadMaterial("material_green", "images/plch/green.jpg");
 	assetManager.LoadMaterial("material_blue", "images/plch/blue.jpg");
-	assetManager.LoadMaterial("material_skybox", "models/skybox/skybox_diffuse.jpg");
+	//assetManager.LoadMaterial("material_skybox", "models/skybox/skybox_diffuse.jpg");
 	assetManager.LoadMaterial("material_sea", "models/sea/sea_diffuse.jpg");
-	assetManager.LoadMaterial("material_boat", "models/boat/boat_diffuse.jpg");
-	assetManager.LoadMaterial("material_bullet", "models/bullet/bullet_diffuse.jpg");
-	assetManager.LoadMaterial("material_enemy", "models/enemy/enemy_diffuse.jpg");
+	assetManager.LoadMaterial("material_kop", "models/boat/kop_diffuse.jpg");
+	assetManager.LoadMaterial("material_column", "models/bullet/column_diffuse.jpg");
+	//assetManager.LoadMaterial("material_enemy", "models/enemy/enemy_diffuse.jpg");
 	std::cout << "Materials loaded (" << ((clock() - bench) / 1000.0f) << " seconds)" << std::endl;
 	bench = clock();
 
