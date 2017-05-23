@@ -1,0 +1,277 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="OpenGLEngine::AssetManager" Collapsed="true">
+    <Position X="8" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAYAAAAAAAAgAIEgAAAAAAAAgCAAAAIAAAAAAA=</HashCode>
+      <FileName>AssetManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OpenGLEngine::SoundEffect" Collapsed="true">
+    <Position X="8" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAgAAAAAAAAAAAAAAAAAAAAAAAggAAAAAAAAA=</HashCode>
+      <FileName>AudioManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OpenGLEngine::AudioManager" Collapsed="true">
+    <Position X="9.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAISAAAAIBABAAAAQBAEiAAOAABA=</HashCode>
+      <FileName>AudioManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OpenGLEngine::Music" Collapsed="true">
+    <Position X="11.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAEAAAAAAAAAAAAAAAAAAAQAAAAAoAAIAAgAIAA=</HashCode>
+      <FileName>AudioManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OpenGLEngine::BoatPhysics" Collapsed="true">
+    <Position X="11.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAQgAACAARAgCABEAAAAACQgAAAEAQAAABQAAAgIAAA=</HashCode>
+      <FileName>BoatPhysics.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OpenGLEngine::BulletPhysics" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACRAAAAAIEAAAAAAAAAAAAAKAAQQAAAAAAAA=</HashCode>
+      <FileName>BulletPhysics.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OpenGLEngine::EnemyPhysics" Collapsed="true">
+    <Position X="2.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAABAAAAAAAAAAAAACBAIAAAAAAAAAAAA=</HashCode>
+      <FileName>EnemyPhysics.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OpenGLEngine::GameObject" Collapsed="true">
+    <Position X="1.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAEAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>GameObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OpenGLEngine::DebugObject" Collapsed="true">
+    <Position X="13.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAEAACAAAAAAAAAAAA=</HashCode>
+      <FileName>GameObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OpenGLEngine::GLCube" Collapsed="true">
+    <Position X="9.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAkAAAAAAIABAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>GLPrimitives.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OpenGLEngine::GLText" Collapsed="true">
+    <Position X="11.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAkAAAICAIAACAAAAAAAABAAAEAAQAAA=</HashCode>
+      <FileName>GLPrimitives.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OpenGLEngine::GLWindow" Collapsed="true">
+    <Position X="13.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QQAAAAAAAABAEAAAAAAAAAAAAAAAAAgAAABCUQBAAAA=</HashCode>
+      <FileName>GLWindow.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OpenGLEngine::IApp" Collapsed="true">
+    <Position X="15" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAEAIIAAAAAAAAAAAAAAAAAAABACAAAAAQI=</HashCode>
+      <FileName>IApp.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OpenGLEngine::InputManager" Collapsed="true">
+    <Position X="8" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAAAAAgAABAAAAAJIANAAAAAIAAEAAA=</HashCode>
+      <FileName>InputManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OpenGLEngine::IScreen" Collapsed="true">
+    <Position X="9.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQCAAAAAQAAAgAAIAAAAAAAAABQoQAAAAEAAAAAAAA=</HashCode>
+      <FileName>IScreen.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OpenGLEngine::ScreenList" Collapsed="true">
+    <Position X="13.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAABhAAAIEABACAAAAAAAAAQAAAA=</HashCode>
+      <FileName>ScreenList.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OpenGLEngine::ShaderProgram" Collapsed="true">
+    <Position X="15" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAIAAAAIAAAEAAABAAAgAAAEAAAABEIAABQg=</HashCode>
+      <FileName>ShaderProgram.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OpenGLEngine::Text2D" Collapsed="true">
+    <Position X="9.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAgQAQAAAIAAAAAAAAgAAAQAAgAAAAAA=</HashCode>
+      <FileName>Text2D.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OpenGLEngine::Texture2D" Collapsed="true">
+    <Position X="5.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAgQAQAAAIAAAIAAAAgAAAAAAAAAAACA=</HashCode>
+      <FileName>Texture2D.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OpenGLEngine::Button2D" Collapsed="true">
+    <Position X="5.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAgAAAAABABgAAAEAAAAABAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Texture2D.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OpenGLEngine::FPSLimiter" Collapsed="true">
+    <Position X="15" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAICAQEQAAAIAAAAAAAQAAAQAAAAgBAAAAAAAAI=</HashCode>
+      <FileName>Timing.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GLCamera" Collapsed="true">
+    <Position X="8" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAEBAAAAIAAAIgAAAAAAAMAAAAAEAgEAAAI=</HashCode>
+      <FileName>GLCamera.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="OpenGLEngine::Vertex" Collapsed="true">
+    <Position X="15" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABAAAAAAAAIAgAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>GLPrimitives.cpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="OpenGLEngine::Config" Collapsed="true">
+    <Position X="8" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AICAAAwAAAAAAAABAAAAAAAAAgACAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>BoatPhysics.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="OpenGLEngine::BaseLight" Collapsed="true">
+    <Position X="3" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>GLLight.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="OpenGLEngine::DirLight" Collapsed="true">
+    <Position X="3" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GLLight.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="OpenGLEngine::PointLight" Collapsed="true">
+    <Position X="5.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAIAAAAAAAAAAAAAAIACAAAAA=</HashCode>
+      <FileName>GLLight.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="OpenGLEngine::SpotLight" Collapsed="true">
+    <Position X="0.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAIAAAgAAAAAAAAAAIACAAEAA=</HashCode>
+      <FileName>GLLight.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="OpenGLEngine::DebugLight" Collapsed="true">
+    <Position X="9.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAJAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GLLight.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="OpenGLEngine::GLMaterial" Collapsed="true">
+    <Position X="11.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABCAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>GLMaterial.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="OpenGLEngine::GlobalMaterial" Collapsed="true">
+    <Position X="15" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAIAAAgAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GLMaterial.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="OpenGLEngine::GLMesh" Collapsed="true">
+    <Position X="13.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAwIAAgAAIAEAAAAAAAAAAgAAQBAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GLMesh.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="OpenGLEngine::GlobalMesh" Collapsed="true">
+    <Position X="8" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAABAAAAAAAAAA=</HashCode>
+      <FileName>GLMesh.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="OpenGLEngine::GLTexture" Collapsed="true">
+    <Position X="9.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAgA=</HashCode>
+      <FileName>GLTexture.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="OpenGLEngine::input10" Collapsed="true">
+    <Position X="11.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkAIwAAAAAAAA=</HashCode>
+      <FileName>IApp.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Transform" Collapsed="true">
+    <Position X="13.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAACAIAACAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Transform.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Enum Name="OpenGLEngine::WindowFlags" Collapsed="true">
+    <Position X="11.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAACAAAAAAAAAAAAAAAAIAAAAAAAAEAAA=</HashCode>
+      <FileName>GLWindow.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="OpenGLEngine::KEY_MESSAGE" Collapsed="true">
+    <Position X="8" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAABAACAAAAAAAAAAAAAAAAACAAAAAIgAAA=</HashCode>
+      <FileName>IApp.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="OpenGLEngine::ScreenState" Collapsed="true">
+    <Position X="9.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAAAQAACAAAAAAAAAAAAAAAAAAAAQA=</HashCode>
+      <FileName>IScreen.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
