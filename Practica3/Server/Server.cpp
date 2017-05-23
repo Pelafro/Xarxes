@@ -105,7 +105,7 @@ int main()
 								{
 									if (i != j && playing[i].ready == playing[j].ready)
 									{
-
+										// TODO> Things
 									}
 								}
 								break;
