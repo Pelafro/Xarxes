@@ -101,7 +101,13 @@ int main()
 							if (playing[i].id == com.front().id)
 							{
 								playing[i].ready = true;
-								// TODO: comprobacio if de si el seu contrincant esta ready
+								for (int j = 0; j < playing.size(); j++)
+								{
+									if (i != j && playing[i].ready == playing[j].ready)
+									{
+
+									}
+								}
 								break;
 							}
 						}
