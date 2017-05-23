@@ -27,6 +27,11 @@
 #define ACCUM_DELTA_SIZE 6 // de -64 a +64
 #define ATTACK_SIZE 2
 
+#define RADIUS 25
+
+#define WIDTH 1600
+#define HEIGHT 900
+
 enum Type { // uint2
 	HELLO,			// Un jugador es vol conectar
 	CONNECTION,		// Informacio sobre conexio
@@ -50,7 +55,20 @@ struct Command {
 	int type = 0;
 	int id = 0;
 	int position = 0;
+	int x = 0;
+	int y = 0;
 	Accum accum;
+};
+
+struct Particle {
+	int id = 0;
+	int x = 0;
+	int y = 0;
+	int vel = 0;
+	int down = 1;
+	int right = 1;
+	int nextX = 0;
+	int nextY = 0;
 };
 
 // Copyright (C) 2014 Maximilian Wagenbach (aka. Foaly) (foaly.f@web.de)
@@ -292,7 +310,7 @@ public:
 	int id = 0;
 	int x = 0;
 	int originalX = 0;
-	int y;
+	int y = 0;
 	int ready = 0;
 	int attack = 0; // 0=Idle 1=Top 2=Mid 3=Bot
 	int score = 0;
@@ -366,6 +384,7 @@ class ServerReceive : public Receive {
 
 public:
 	std::vector<ServerPlayer> *players;
+	//ServerPlayer *player;
 
 	void ReceiveCommands() {
 		do {
@@ -393,7 +412,11 @@ public:
 
 				case HELLO: {
 					ServerPlayer playertmp;
-					if (!players->empty()) {
+					playertmp.ip = ip;					// crea nou jugador
+					playertmp.port = port;
+					players->push_back(playertmp);
+					std::cout << "newplayer";
+					/*if (!players->empty()) {
 						for (int i = 0; i < players->size(); i++) // recorre tots els jugadors
 						{
 							if (players->at(i).port == port && players->at(i).ip == ip) // Si es el jugador 2
@@ -424,12 +447,13 @@ public:
 
 						players->push_back(playertmp);
 						comtmp.id = playertmp.id; // Marca per donar posicio
-					}
+					}*/
 				}
 							break;
 				case CONNECTION :
 				{
-					newCommand.Read(&comtmp.id, ID_SIZE);
+					newCommand.Read(&comtmp.position, ACCUM_ID_SIZE);
+
 				}
 				break;
 
@@ -447,11 +471,9 @@ public:
 
 				case MOVEMENT:
 				{
-					newCommand.Read(&comtmp.id, ID_SIZE);			// ID del player
-					newCommand.Read(&comtmp.accum.id, ACCUM_ID_SIZE);		// ID del acumulat
-					newCommand.Read(&comtmp.accum.sign, ID_SIZE);	// Signe del acumulat
-					newCommand.Read(&comtmp.accum.delta, ACCUM_DELTA_SIZE);	// Accumulat
-					newCommand.Read(&comtmp.accum.absolute, POSITION_SIZE);	// Absolut
+					newCommand.Read(&comtmp.id, ACCUM_ID_SIZE);			// ID del player
+					newCommand.Read(&comtmp.x, POSITION_SIZE);		// ID del acumulat
+					newCommand.Read(&comtmp.y, POSITION_SIZE);	// Signe del acumulat
 
 					//std::cout << " Delta " << comtmp.accum.delta << std::endl;
 
@@ -461,8 +483,8 @@ public:
 
 				case ATTACK:
 				{
-					newCommand.Read(&comtmp.id, ID_SIZE);
-					newCommand.Read(&comtmp.position, ATTACK_SIZE); // quin atac a fet. // 0=Idle 1=Top 2=Mid 3=Bot
+					newCommand.Read(&comtmp.x, POSITION_SIZE);
+					newCommand.Read(&comtmp.y, POSITION_SIZE); // quin atac a fet. // 0=Idle 1=Top 2=Mid 3=Bot
 				}
 				break;
 
@@ -508,15 +530,16 @@ public:
 				switch (comtmp.type) {
 
 				case HELLO: {
-					newCommand.Read(&comtmp.id, ID_SIZE);
-					newCommand.Read(&comtmp.position, POSITION_SIZE);
+					std::cout << "Hello Received " << std::endl;
+					//newCommand.Read(&comtmp.id, ID_SIZE);
+					//newCommand.Read(&comtmp.position, POSITION_SIZE);
 				}
 				break;
 
 				case CONNECTION:
 				{
 					newCommand.Read(&comtmp.id, ID_SIZE);
-					newCommand.Read(&comtmp.position, POSITION_SIZE);
+					newCommand.Read(&comtmp.position, ACCUM_ID_SIZE);
 				}
 				break;
 
@@ -546,14 +569,15 @@ public:
 
 				case ATTACK:
 				{
-					newCommand.Read(&comtmp.id, ID_SIZE);
-					newCommand.Read(&comtmp.position, ATTACK_SIZE); // quin atac a fet. // 0=Idle 1=Top 2=Mid 3=Bot
+					newCommand.Read(&comtmp.id, ACCUM_ID_SIZE);
 				}
 				break;
 
 				case SCORE:
 				{
-					newCommand.Read(&comtmp.id, ID_SIZE);
+					newCommand.Read(&comtmp.id, ACCUM_ID_SIZE);
+					newCommand.Read(&comtmp.x, POSITION_SIZE);
+					newCommand.Read(&comtmp.y, POSITION_SIZE);
 				}
 				break;
 

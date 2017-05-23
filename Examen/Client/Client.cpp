@@ -85,6 +85,14 @@ int main()
 	}
 	sf::Sprite sprite;
 	sprite.setTexture(background);
+
+	sf::Texture particleT;
+	if (!particleT.loadFromFile("../Resources/Fucsia.png")) {
+		std::cout << "Can't load the image file" << std::endl;
+		return -1;
+	}
+	sf::Sprite particle;
+	particle.setTexture(particleT);
 	
 	//TEXT
 	sf::Font font;
@@ -111,6 +119,10 @@ int main()
 	thread.launch();																	// Comencem thread receive
 
 	bool attacking = false;
+
+	int numParticles = 0;
+	int velParticles = 1;
+	std::vector<Particle> particles;
 
 	while (window.isOpen())
 	{
@@ -145,11 +157,18 @@ int main()
 
 				case HELLO: {
 
-					player[0].id = com.front().id;
-					player[0].x = com.front().position;
-					player[0].originalX = player[0].x;
-					player[0].accum.front().origin = player[0].x;
+					//player[0].id = com.front().id;
+					//player[0].x = com.front().position;
+					//player[0].originalX = player[0].x;
+					//player[0].accum.front().origin = player[0].x;
 
+					std::cout << std::endl << "Escribe el numero de particulas que quieres (entre 1 i 15): ";
+					std::cin >> numParticles;
+
+					OutputMemoryBitStream output;
+					output.Write(CONNECTION, TYPE_SIZE);
+					output.Write(numParticles, ACCUM_ID_SIZE);
+					sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
 					/*if (player[0].id == 1)
 					{}
 					else
@@ -161,9 +180,12 @@ int main()
 
 				case CONNECTION: {
 
-					player[1].id = com.front().id;
+
+					velParticles = com.front().position;
+					state = play;
+					/*player[1].id = com.front().id;
 					player[1].x = com.front().position;
-					player[1].originalX = player[1].x;
+					player[1].originalX = player[1].x;*/
 
 					com.pop();
 
@@ -171,7 +193,7 @@ int main()
 								 break;
 				}
 			}
-			if (player[0].x != 0 && player[1].x != 0)
+			/*if (player[0].x != 0 && player[1].x != 0)
 			{
 				OutputMemoryBitStream output;
 				output.Write(CONNECTION, TYPE_SIZE);
@@ -179,7 +201,7 @@ int main()
 				sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
 				state = play;
 				//std::cout << "play " << player[0].x << " " << player[1].x << std::endl;
-			}
+			}*/
 		}
 					  break;
 
@@ -190,8 +212,35 @@ int main()
 
 			//-- MOVEMENT --//
 			sf::Keyboard key;
-			//if (event.type == sf::Event::KeyPressed) {
-				if (key.isKeyPressed(sf::Keyboard::Right)) 
+			if (event.type == sf::Event::KeyPressed) {
+
+				switch (event.type)
+				{
+				case sf::Event::MouseButtonPressed:
+				{
+					switch (event.mouseButton.button) 
+					{
+					case sf::Mouse::Left:
+					{
+						int x = event.mouseButton.x;
+						int y = event.mouseButton.y;
+
+						OutputMemoryBitStream output;
+						output.Write(ATTACK, TYPE_SIZE);
+						output.Write(x, POSITION_SIZE);
+						output.Write(y, POSITION_SIZE);
+
+
+
+						sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
+					}
+					break;
+					}			
+				}
+				break;
+				}
+
+				/*if (key.isKeyPressed(sf::Keyboard::Right)) 
 				//if (event.key.code == sf::Keyboard::Right)
 				{
 					int movement = 2;
@@ -282,8 +331,8 @@ int main()
 				else if (event.key.code == sf::Keyboard::C && player[0].attack != 0)
 				{
 					player[0].attack = 0;
-				}
-			//}
+				}*/
+			}
 			/*if (player[0].attack != 0)
 			{*/
 
@@ -356,6 +405,33 @@ int main()
 
 			//-- COMMANDS --//
 
+			for (int i = 0; i < particles.size(); i++)
+			{
+				if (particles[i].x != particles[i].nextX)
+				{
+					particles[i].x += velParticles*particles[i].right;
+					if (particles[i].x + RADIUS > WIDTH)
+					{
+						particles[i].right = -1;
+					}
+					else if (particles[i].x - RADIUS < 0)
+					{
+						particles[i].right = 1;
+					}
+
+					particles[i].y += velParticles*particles[i].down;
+					if (particles[i].x + RADIUS > HEIGHT)
+					{
+						particles[i].down = -1;
+					}
+					else if (particles[i].x - RADIUS < 0)
+					{
+						particles[i].down = 1;
+					}
+				}				
+			}
+
+
 			if (!com.empty()) {
 				switch (com.front().type) {
 
@@ -364,10 +440,10 @@ int main()
 							break;
 
 				case CONNECTION: {
-					OutputMemoryBitStream output;
+					/*OutputMemoryBitStream output;
 					output.Write(CONNECTION, TYPE_SIZE);
 					output.Write(player[0].id, ID_SIZE);
-					sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
+					sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());*/
 					com.pop();
 					break;
 				}
@@ -381,25 +457,8 @@ int main()
 				}
 				case MOVEMENT: {
 
-					if (com.front().id == player[0].id)				// Si es el id propi, comfirma el moviment
-					{	
-						for (int i = 0; i < player[0].accum.size(); i++)	// Recorre tots els misatges de acumulacio
-						{
-							if (player[0].accum[i].id == com.front().accum.id)		// Si troba el misatge de acumulacio
-							{
-								for (int j = 0; j < player[0].accum.size() - i; j++)		// Recorre els misatges que hi havien fins ara
-								{
-									player[0].accum.erase(player[0].accum.begin());					// Borrals
-								}
-								break;
-							}
-						}
-					}
-					else							// Si es el id del contrincant, simula el moviment
-					{
-						Accum accumtmp = com.front().accum;
-						player[1].accum.push_back(accumtmp);	// Afegir acumulat a la cua
-					}
+					particles[com.front().id].nextX = com.front().x;
+					particles[com.front().id].nextY = com.front().y;
 
 					com.pop();		
 				}
@@ -407,7 +466,12 @@ int main()
 
 				case ATTACK:
 				{
-					player[1].attack = com.front().position;
+					particles.erase(particles.begin() + com.front().id);
+
+					if (particles.empty())
+					{
+						window.close();
+					}
 
 					com.pop();
 				}
@@ -415,25 +479,12 @@ int main()
 
 				case SCORE:
 				{
-					player[com.front().id].score++;
+					Particle particletmp;
+					particletmp.id = com.front().id;
+					particletmp.x = com.front().x;
+					particletmp.y = com.front().y;
 
-					text1.setString(std::to_string(player[0].score));
-					text2.setString(std::to_string(player[1].score));
-
-					player[0].x = player[0].originalX;
-					player[1].x = player[1].originalX;
-
-					player[0].attack = 0;
-					player[1].attack = 0;
-
-					timerAccum.Start(ACCUMTIME);
-
-					for (int j = 0; j < player.size(); j++)
-					{
-						player[j].accum.clear();
-					}
-					Accum accumtmp;
-					player[0].accum.push_back(accumtmp);
+					particles.push_back(particletmp);
 
 					com.pop();
 				}
@@ -447,8 +498,18 @@ int main()
 		}
 				   break;
 		}
-		window.draw(sprite);
 
+
+		window.draw(sprite);
+		if (state == play) {
+			for (int i = 0; i < particles.size(); i++)
+			{
+				int x = particles[i].x;
+				int y = particles[i].y;
+				particle.setPosition(x, y);
+				window.draw(particle);
+			}
+		}
 		window.draw(text1); //Text de puntuacions
 		window.draw(text2);
 
