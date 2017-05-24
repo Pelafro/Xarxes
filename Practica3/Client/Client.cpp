@@ -433,7 +433,7 @@ int main()
 
 					com.pop();
 				}
-							break;
+				break;
 
 				case CONNECTION: {
 
@@ -451,7 +451,16 @@ int main()
 					}
 					com.pop();
 				}
-								 break;
+				break;
+
+				case PLAY: 
+				{
+					state = play;
+
+					com.pop();
+				}
+				break;
+								
 				}
 			}
 			if (player[0].x != 0 && player[1].x != 0)
@@ -509,7 +518,7 @@ int main()
 				output.Write(CONNECTION, TYPE_SIZE);
 				output.Write(player[0].id, ID_SIZE);
 				sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
-				state = play;
+				//state = play;
 				//std::cout << "play " << player[0].x << " " << player[1].x << std::endl;
 			}
 		}

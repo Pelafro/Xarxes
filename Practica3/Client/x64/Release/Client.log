@@ -1,22 +1,18 @@
-﻿  Client.cpp
-E:\Xarxes\Practica3\ChatLib\Game.h(328): warning C4244: '=': conversion from 'float' to 'clock_t', possible loss of data
-E:\Xarxes\Practica3\ChatLib\Game.h(383): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
-E:\Xarxes\Practica3\ChatLib\Game.h(502): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppClean.targets(76,5): warning : Access to the path 'e:\xarxes\practica3\x64\release\client.exe' is denied.
+  Client.cpp
+E:\Xarxes\Practica3\ChatLib\Game.h(329): warning C4244: '=': conversion from 'float' to 'clock_t', possible loss of data
+E:\Xarxes\Practica3\ChatLib\Game.h(384): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+E:\Xarxes\Practica3\ChatLib\Game.h(503): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
 Client.cpp(355): warning C4305: 'argument': truncation from 'double' to 'float'
 Client.cpp(356): warning C4305: 'argument': truncation from 'double' to 'float'
 Client.cpp(357): warning C4305: 'argument': truncation from 'double' to 'float'
 Client.cpp(358): warning C4305: 'argument': truncation from 'double' to 'float'
 Client.cpp(359): warning C4305: 'argument': truncation from 'double' to 'float'
-Client.cpp(796): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-Client.cpp(798): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-Client.cpp(806): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-Client.cpp(810): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-Client.cpp(814): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-Client.cpp(818): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-Client.cpp(519): warning C4101: 'key': unreferenced local variable
-  Generating code
-  All 839 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
-  Finished generating code
-ChatLib.lib(Send.obj) : warning LNK4099: PDB 'ChatLib.pdb' was not found with 'ChatLib.lib(Send.obj)' or at 'E:\Xarxes\Practica3\x64\Release\ChatLib.pdb'; linking object as if no debug info
-  Client.vcxproj -> E:\Xarxes\Practica3\x64\Release\Client.exe
-  Client.vcxproj -> E:\Xarxes\Practica3\x64\Release\Client.pdb (Full PDB)
+Client.cpp(810): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+Client.cpp(812): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+Client.cpp(820): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+Client.cpp(824): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+Client.cpp(828): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+Client.cpp(832): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+Client.cpp(533): warning C4101: 'key': unreferenced local variable
+LINK : fatal error LNK1104: cannot open file 'E:\Xarxes\Practica3\x64\Release\Client.exe'

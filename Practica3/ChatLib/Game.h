@@ -35,6 +35,7 @@ enum Type { // uint2
 	MOVEMENT,		// Informació sobre el moviment
 	ATTACK,			// Informació sobre el atac
 	SCORE,			// Informació sobre la puntuació
+	PLAY,
 };
 
 /*Paquets de acumulacio de moviment*/
@@ -556,6 +557,12 @@ public:
 				case SCORE:
 				{
 					newCommand.Read(&comtmp.id, ID_SIZE);
+				}
+				break;
+
+				case PLAY:
+				{
+
 				}
 				break;
 

@@ -105,7 +105,11 @@ int main()
 								{
 									if (i != j && playing[i].ready == playing[j].ready)
 									{
-										// TODO> Things
+										OutputMemoryBitStream output;
+										output.Write(PLAY, TYPE_SIZE);
+
+										sender.SendMessages(player[i].ip, player[i].port, output.GetBufferPtr(), output.GetByteLength());
+										sender.SendMessages(player[j].ip, player[j].port, output.GetBufferPtr(), output.GetByteLength());
 									}
 								}
 								break;
@@ -114,10 +118,117 @@ int main()
 						com.pop();
 					}
 					break;
+					case MOVEMENT: 
+					{
+						Accum accumtmp = com.front().accum;
+
+						int threshold = 6; // Maximum error able to forgive
+						for (int i = -threshold; i < threshold; i++)
+						{
+							int distance;
+							if (com.front().id == 0)
+							{
+								distance = accumtmp.absolute - player[1].x;
+							}
+							else {
+								distance = accumtmp.absolute - player[0].x;
+							}
+							if (distance < 0) distance = -distance;
+							if (accumtmp.absolute > LEFT_LIMIT && accumtmp.absolute < RIGHT_LIMIT && distance > DISTANCIA_BODY) {
+								if ((player[com.front().id].x + accumtmp.delta + i) == accumtmp.absolute) { // si esta dins de la posicio que estem disposats a accpetar
+									player[com.front().id].x = accumtmp.absolute;
+									player[com.front().id].accum.push_back(accumtmp);
+
+									OutputMemoryBitStream output;
+									output.Write(MOVEMENT, TYPE_SIZE);
+									output.Write(com.front().id, ID_SIZE);
+									output.Write(player[com.front().id].accum.back().id, ACCUM_ID_SIZE);
+									output.Write(player[com.front().id].accum.back().sign, ID_SIZE);
+									if (player[com.front().id].accum.back().delta < 0)
+										output.Write(-player[com.front().id].accum.back().delta, ACCUM_DELTA_SIZE);
+									else
+										output.Write(player[com.front().id].accum.back().delta, ACCUM_DELTA_SIZE);
+									output.Write(player[com.front().id].accum.back().absolute, POSITION_SIZE);
+
+									//std::cout << "Delta received: " << com.front().accum.delta << std::endl;
+
+									for (int k = 0; k < player.size(); k++)
+									{
+										sender.SendMessages(player[k].ip, player[k].port, output.GetBufferPtr(), output.GetByteLength());
+									}
+								}
+							}
+						}
+						//accumtmp.absolute = player[com.front().id].x + accumtmp.delta;
+
+						com.pop();
+
+					}
+					break;
+					case ATTACK: {
+
+						if (player[com.front().id].attack == 0)
+						{
+							player[com.front().id].attack = com.front().position;
+
+							OutputMemoryBitStream output;
+							output.Write(ATTACK, TYPE_SIZE);
+							output.Write(player[com.front().id].id, ID_SIZE);
+							output.Write(player[com.front().id].attack, ATTACK_SIZE);
+
+							if (com.front().id == 0)
+							{
+								sender.SendMessages(player[1].ip, player[1].port, output.GetBufferPtr(), output.GetByteLength());
+							}
+							else
+							{
+								sender.SendMessages(player[0].ip, player[0].port, output.GetBufferPtr(), output.GetByteLength());
+							}
+
+							com.pop();
+						}
+						else
+						{
+							int distance = player[0].x - player[1].x;
+							if (distance < 0) distance = -distance;
+							if (distance < DISTANCE_ATTACK)
+							{
+								player[com.front().id].score++;
+
+								player[0].x = player[0].originalX;
+								player[1].x = player[1].originalX;
+
+								OutputMemoryBitStream output;
+								output.Write(SCORE, TYPE_SIZE);
+								output.Write(player[com.front().id].id, ID_SIZE);
+
+								if (!com.empty())
+								{
+									while (!com.empty())
+									{
+										com.pop();
+									}
+								}
+
+								for (int k = 0; k < player.size(); k++)
+								{
+									sender.SendMessages(player[k].ip, player[k].port, output.GetBufferPtr(), output.GetByteLength());
+								}
+							}
+							else
+							{
+								com.pop();
+							}
+							player[com.front().id].attack = 0;
+							//player[1].attack = 0;
+						}
+
+					}
+								 break;
 
 					}
 				}
-				if (player.size() > TOTALPLAYERS) { // Si existeixen mes de 2 jugadors
+				if (player.size() >= TOTALPLAYERS) { // Si existeixen mes de 2 jugadors
 					for (int i = 0; i < player.size(); i++) // Matchmaking
 					{
 						for (int j = i; j < player.size(); j++)
@@ -134,7 +245,7 @@ int main()
 									player[i].matchId = matchNum;
 									playing.push_back(player[i]);
 
-									player[j].id = 0;
+									player[j].id = 1;
 									player[j].x = 800;
 									player[j].matchId = matchNum;
 									playing.push_back(player[j]);
