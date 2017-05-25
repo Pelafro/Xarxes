@@ -20,7 +20,7 @@
 #define DISTANCE_ATTACK 200
 #define DISTANCIA_BODY 70
 
-#define TYPE_SIZE 3 
+#define TYPE_SIZE 4 
 #define ID_SIZE 1 // Tambien funciona para negatio i positivo
 #define POSITION_SIZE 11
 #define ACCUM_ID_SIZE 4
@@ -378,6 +378,8 @@ public:
 			sf::Socket::Status status = socket->receive(data, 1500, received, ip, port);
 			data[received] = '\0';
 
+			
+
 			if (status == sf::Socket::Done) {
 				mutex->lock();
 				//commands->push(data);
@@ -388,7 +390,7 @@ public:
 				comtmp.type = 0;
 				newCommand.Read(&comtmp.type, 3);
 
-				//std::cout << "Client Case is " << comtmp.type << std::endl;
+				std::cout << "Client Case is " << comtmp.type << std::endl;
 
 				switch (comtmp.type) {
 

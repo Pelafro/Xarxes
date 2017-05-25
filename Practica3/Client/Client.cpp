@@ -428,7 +428,7 @@ int main()
 
 				case HELLO: {
 					std::cout << std::endl << "Waiting for oponent" << std::endl;
-
+					timerConnect.Stop();
 					/**/
 
 					com.pop();
@@ -463,7 +463,7 @@ int main()
 								
 				}
 			}
-			if (player[0].x != 0 && player[1].x != 0)
+			if (player[0].x != 0 && player[1].x != 0 && player[0].ready == 0)
 			{
 				// TODO: Comprobacions de que es te tot
 				if (player[0].id == 1)
@@ -518,6 +518,8 @@ int main()
 				output.Write(CONNECTION, TYPE_SIZE);
 				output.Write(player[0].id, ID_SIZE);
 				sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
+
+				player[0].ready = 1;
 				//state = play;
 				//std::cout << "play " << player[0].x << " " << player[1].x << std::endl;
 			}

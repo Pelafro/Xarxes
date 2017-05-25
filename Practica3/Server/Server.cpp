@@ -78,6 +78,7 @@ int main()
 			//if (!playersConected) {
 				//mutex.lock();
 				if (!com.empty()) {
+					std::cout << com.size();
 					switch (com.front().type) {
 					case HELLO: {	// Un client es vol conectar
 
@@ -88,10 +89,10 @@ int main()
 								OutputMemoryBitStream output;
 								output.Write(HELLO, TYPE_SIZE);
 								sender.SendMessages(player[i].ip, player[i].port, output.GetBufferPtr(), output.GetByteLength());
-								com.pop();
+								
 							}
 						}
-						
+						com.pop();
 					}
 						break;
 					case CONNECTION:
@@ -107,7 +108,7 @@ int main()
 									{
 										OutputMemoryBitStream output;
 										output.Write(PLAY, TYPE_SIZE);
-
+										std::cout << std::endl << "envia play";
 										sender.SendMessages(player[i].ip, player[i].port, output.GetBufferPtr(), output.GetByteLength());
 										sender.SendMessages(player[j].ip, player[j].port, output.GetBufferPtr(), output.GetByteLength());
 									}
