@@ -400,11 +400,21 @@ int main()
 		{
 			if (event.type == sf::Event::Closed)
 				window.close();
-			if (event.type == sf::Event::KeyPressed )
+			if (event.type == sf::Event::KeyPressed)
+			{
 				if (event.key.code == sf::Keyboard::Escape)
 				{
 					window.close();
-				}				
+				}
+				if (event.key.code == sf::Keyboard::Return)
+				{
+					OutputMemoryBitStream output;
+					output.Write(HELLO, TYPE_SIZE);
+					output.Write(1, ID_SIZE);
+					output.Write(player[0].id, ACCUM_DELTA_SIZE);
+					sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
+				}
+			}
 		}
 
 		sf::Time frameTime = frameClock.restart();
@@ -415,6 +425,7 @@ int main()
 				if (player[0].x == 0) {
 					OutputMemoryBitStream output;
 					output.Write(HELLO, TYPE_SIZE);
+					output.Write(0, ID_SIZE);
 					output.Write(wins, ACCUM_DELTA_SIZE);
 					sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
 
@@ -427,16 +438,24 @@ int main()
 				switch (com.front().type) {
 
 				case HELLO: {
-					std::cout << std::endl << "Waiting for oponent" << std::endl;
-					timerConnect.Stop();
-					/**/
+					if (com.front().id == 0)
+					{
+						player[0].id == com.front().position;
+						std::cout << std::endl << "Press enter to search for an opponent" << std::endl;
+						timerConnect.Stop();
+					}
+					else
+					{
+						std::cout << std::endl << "Waiting for oponent" << std::endl;
+					}
+					
 
 					com.pop();
 				}
 				break;
 
 				case CONNECTION: {
-
+					std::cout << std::endl << "Opponent found";
 					if (com.front().accum.id == 0)
 					{
 						player[0].id = com.front().id;

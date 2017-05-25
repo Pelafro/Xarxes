@@ -22,7 +22,7 @@
 
 #define TYPE_SIZE 4 
 #define ID_SIZE 1 // Tambien funciona para negatio i positivo
-#define POSITION_SIZE 11
+#define POSITION_SIZE 12
 #define ACCUM_ID_SIZE 4
 #define ACCUM_DELTA_SIZE 6 // de -64 a +64
 #define ATTACK_SIZE 2
@@ -36,6 +36,7 @@ enum Type { // uint2
 	ATTACK,			// Informació sobre el atac
 	SCORE,			// Informació sobre la puntuació
 	PLAY,
+	SEARCH
 };
 
 /*Paquets de acumulacio de moviment*/
@@ -388,47 +389,44 @@ public:
 
 				Command comtmp;
 				comtmp.type = 0;
-				newCommand.Read(&comtmp.type, 3);
+				newCommand.Read(&comtmp.type, TYPE_SIZE);
 
 				std::cout << "Client Case is " << comtmp.type << std::endl;
 
 				switch (comtmp.type) {
 
 				case HELLO: {
+
 					ServerPlayer playertmp;
 					newCommand.Read(&playertmp.score, ACCUM_DELTA_SIZE);
-					if (!players->empty()) {
+					if (!players->empty()) 
+					{
 						for (int i = 0; i < players->size(); i++) // recorre tots els jugadors
 						{
 							if (players->at(i).port == port && players->at(i).ip == ip) // Si es el jugador 2
 							{
-								//comtmp.id = players->at(i).id;
-								break;							// acaba el for
+								break;								// acaba el for
 							}
 							else if (i == players->size() - 1) {	// si no existeix 
-								playertmp.ip = ip;				// crea nou jugador
+								playertmp.ip = ip;					// crea nou jugador
 								playertmp.port = port;
-								/*if (players->at(0).id == 0)
-								{
-									playertmp.id = 1; // player 2
-								}
-								else
-								{
-									playertmp.id = 0; // player 1
-								}*/
+								playertmp.id = players->at(players->size() - 1).id + 1; // Una id mes que l'ultim
+								comtmp.accum.id = playertmp.id;
+
 								players->push_back(playertmp);
-								//comtmp.id = players->at(i).id; // Marca per donar posicio
 							}
 						}
 					}
-					else {
+					else 
+					{
 						playertmp.ip = ip;					// crea nou jugador
 						playertmp.port = port;
-						//playertmp.id = 0;
+						playertmp.id = 0;
+						comtmp.accum.id = playertmp.id;
 
 						players->push_back(playertmp);
-						//comtmp.id = playertmp.id; // Marca per donar posicio
 					}
+					
 				}
 							break;
 				case CONNECTION :
@@ -476,7 +474,14 @@ public:
 				}
 				break;
 
+				case SEARCH:
+				{
+
 				}
+				break;
+				}
+
+				
 				com->push(comtmp);
 				mutex->unlock();
 			}
@@ -507,13 +512,12 @@ public:
 
 				Command comtmp;
 				comtmp.type = 0;
-				newCommand.Read(&comtmp.type, 3);
+				newCommand.Read(&comtmp.type, TYPE_SIZE);
 
 				switch (comtmp.type) {
 
 				case HELLO: {
-					//newCommand.Read(&comtmp.id, ID_SIZE);
-					//newCommand.Read(&comtmp.position, POSITION_SIZE);
+					newCommand.Read(&comtmp.position, POSITION_SIZE);
 				}
 				break;
 

@@ -25,7 +25,8 @@ int main()
 	ServerReceive receiver;										// Receiver per rebre constanment misatges
 	sf::Thread thread(&ServerReceive::ReceiveCommands, &receiver);	// Thread per el receiver
 	std::vector<ServerPlayer> player;							// Vector de jugadors
-	std::vector<ServerPlayer> playing;							// Vector de jugadors
+	std::vector<ServerPlayer> waiting;							// Jugadors esperan per partida
+	std::vector<ServerPlayer> playing;							// Jugadors jugant
 	ServerPlayer playertmp;
 
 	sf::Socket::Status status = socket.bind(5000);				// Bind al port 5000
@@ -84,14 +85,19 @@ int main()
 
 						for (int i = 0; i < player.size(); i++)
 						{
-							if (com.front().id == player[i].id) {	// el jugador que diu Hello
-
+							if (com.front().accum.id == player[i].id) {	// el jugador que diu Hello
 								OutputMemoryBitStream output;
 								output.Write(HELLO, TYPE_SIZE);
+								output.Write(0, ID_SIZE);
+								output.Write(player[i].id, ACCUM_DELTA_SIZE);
 								sender.SendMessages(player[i].ip, player[i].port, output.GetBufferPtr(), output.GetByteLength());
-								
+
+								std::cout << std::endl << "New Player " << player[i].id;
+
+								break;
 							}
 						}
+						
 						com.pop();
 					}
 						break;
@@ -229,58 +235,58 @@ int main()
 
 					}
 				}
-				if (player.size() >= TOTALPLAYERS) { // Si existeixen mes de 2 jugadors
-					for (int i = 0; i < player.size(); i++) // Matchmaking
+				if (waiting.size() >= TOTALPLAYERS) { // Si existeixen mes de 2 jugadors
+					for (int i = 0; i < waiting.size(); i++) // Matchmaking
 					{
-						for (int j = i; j < player.size(); j++)
+						for (int j = i; j < waiting.size(); j++)
 						{
 							if (i != j)
 							{
-								int absoluteScore = player[i].score - player[j].score;
+								int absoluteScore = waiting[i].score - waiting[j].score;
 								if (absoluteScore < 0) absoluteScore = -absoluteScore;
 
 								if (absoluteScore <= matchScore)
 								{
-									player[i].id = 0;
-									player[i].x = 270;
-									player[i].matchId = matchNum;
-									playing.push_back(player[i]);
+									waiting[i].id = 0;
+									waiting[i].x = 270;
+									waiting[i].matchId = matchNum;
+									playing.push_back(waiting[i]);
 
-									player[j].id = 1;
-									player[j].x = 800;
-									player[j].matchId = matchNum;
-									playing.push_back(player[j]);
+									waiting[j].id = 1;
+									waiting[j].x = 800;
+									waiting[j].matchId = matchNum;
+									playing.push_back(waiting[j]);
 
 									OutputMemoryBitStream output1;
 									output1.Write(CONNECTION, TYPE_SIZE);
 									output1.Write(0, ID_SIZE); // 0 per ser la propia
-									output1.Write(player[i].id, ID_SIZE);
-									output1.Write(player[i].x, POSITION_SIZE);
-									sender.SendMessages(player[i].ip, player[i].port, output1.GetBufferPtr(), output1.GetByteLength());
+									output1.Write(waiting[i].id, ID_SIZE);
+									output1.Write(waiting[i].x, POSITION_SIZE);
+									sender.SendMessages(waiting[i].ip, waiting[i].port, output1.GetBufferPtr(), output1.GetByteLength());
 
 									OutputMemoryBitStream output2;
 									output2.Write(CONNECTION, TYPE_SIZE);
 									output2.Write(0, ID_SIZE); // 0 per ser la propia
-									output2.Write(player[j].id, ID_SIZE);
-									output2.Write(player[j].x, POSITION_SIZE);
-									sender.SendMessages(player[j].ip, player[j].port, output2.GetBufferPtr(), output2.GetByteLength());
+									output2.Write(waiting[j].id, ID_SIZE);
+									output2.Write(waiting[j].x, POSITION_SIZE);
+									sender.SendMessages(waiting[j].ip, waiting[j].port, output2.GetBufferPtr(), output2.GetByteLength());
 
 									OutputMemoryBitStream output3;
 									output3.Write(CONNECTION, TYPE_SIZE);
 									output3.Write(1, ID_SIZE); // 1 per ser la propia
-									output3.Write(player[i].id, ID_SIZE);
-									output3.Write(player[i].x, POSITION_SIZE);
-									sender.SendMessages(player[j].ip, player[j].port, output3.GetBufferPtr(), output3.GetByteLength());
+									output3.Write(waiting[i].id, ID_SIZE);
+									output3.Write(waiting[i].x, POSITION_SIZE);
+									sender.SendMessages(waiting[j].ip, waiting[j].port, output3.GetBufferPtr(), output3.GetByteLength());
 									
 									OutputMemoryBitStream output4;
 									output4.Write(CONNECTION, TYPE_SIZE);
 									output4.Write(1, ID_SIZE); // 1 per ser la propia
-									output4.Write(player[j].id, ID_SIZE);
-									output4.Write(player[j].x, POSITION_SIZE);
-									sender.SendMessages(player[i].ip, player[i].port, output4.GetBufferPtr(), output4.GetByteLength());
+									output4.Write(waiting[j].id, ID_SIZE);
+									output4.Write(waiting[j].x, POSITION_SIZE);
+									sender.SendMessages(waiting[i].ip, waiting[i].port, output4.GetBufferPtr(), output4.GetByteLength());
 
-									player.erase(player.begin() + j);
-									player.erase(player.begin() + i);
+									waiting.erase(waiting.begin() + j);
+									waiting.erase(waiting.begin() + i);
 
 									matchNum++;
 									break;
