@@ -392,7 +392,7 @@ int main()
 	thread.launch();																	// Comencem thread receive
 
 	bool attacking = false;
-
+	bool searching = false;
 	while (window.isOpen())
 	{
 		sf::Event event; //Si no la finestra no detecta el ratolí i no es pot moure
@@ -406,13 +406,15 @@ int main()
 				{
 					window.close();
 				}
-				if (event.key.code == sf::Keyboard::Return)
+				if (event.key.code == sf::Keyboard::Return && !searching)
 				{
 					OutputMemoryBitStream output;
-					output.Write(HELLO, TYPE_SIZE);
-					output.Write(1, ID_SIZE);
+					output.Write(SEARCH, TYPE_SIZE);
 					output.Write(player[0].id, ACCUM_DELTA_SIZE);
 					sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
+					std::cout << std::endl << "Waiting for oponent" << std::endl;
+
+					searching = true;
 				}
 			}
 		}
@@ -438,16 +440,13 @@ int main()
 				switch (com.front().type) {
 
 				case HELLO: {
-					if (com.front().id == 0)
-					{
-						player[0].id == com.front().position;
-						std::cout << std::endl << "Press enter to search for an opponent" << std::endl;
-						timerConnect.Stop();
-					}
-					else
+					player[0].id = com.front().id;
+					std::cout << std::endl << "Press enter to search for an opponent" << std::endl;
+					timerConnect.Stop();
+					/*else
 					{
 						std::cout << std::endl << "Waiting for oponent" << std::endl;
-					}
+					}*/
 					
 
 					com.pop();

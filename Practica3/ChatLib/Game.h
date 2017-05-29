@@ -476,7 +476,7 @@ public:
 
 				case SEARCH:
 				{
-
+					newCommand.Read(&comtmp.id, ACCUM_ID_SIZE);
 				}
 				break;
 				}
@@ -517,7 +517,7 @@ public:
 				switch (comtmp.type) {
 
 				case HELLO: {
-					newCommand.Read(&comtmp.position, POSITION_SIZE);
+					newCommand.Read(&comtmp.id, ACCUM_DELTA_SIZE);
 				}
 				break;
 

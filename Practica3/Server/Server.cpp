@@ -50,6 +50,7 @@ int main()
 	MessageManager protocol;
 	Timer timerReady;
 	Timer timerPing;
+	Timer timerMatch;
 	State state = connect;
 	bool playersConected = false;
 	const int matchScore = 10;		// La diferencia maxima per juntar 2 jugadors
@@ -57,7 +58,7 @@ int main()
 
 	timerReady.Start(0);
 	timerPing.Start(0);
-
+	timerMatch.Start(0);
 	//-- GAME --//
 
 	bool gameOn = true;
@@ -88,7 +89,6 @@ int main()
 							if (com.front().accum.id == player[i].id) {	// el jugador que diu Hello
 								OutputMemoryBitStream output;
 								output.Write(HELLO, TYPE_SIZE);
-								output.Write(0, ID_SIZE);
 								output.Write(player[i].id, ACCUM_DELTA_SIZE);
 								sender.SendMessages(player[i].ip, player[i].port, output.GetBufferPtr(), output.GetByteLength());
 
@@ -101,6 +101,22 @@ int main()
 						com.pop();
 					}
 						break;
+					case SEARCH:
+					{
+						int id = com.front().id;
+
+						for (int i = 0; i < player.size(); i++)
+						{
+							if (player[i].id == id)
+							{
+								waiting.push_back(player[i]);
+								break;
+							}
+						}
+
+						com.pop();
+					}
+					break;
 					case CONNECTION:
 					{
 						for (int i = 0; i < playing.size(); i++)
@@ -235,7 +251,9 @@ int main()
 
 					}
 				}
-				if (waiting.size() >= TOTALPLAYERS) { // Si existeixen mes de 2 jugadors
+				if (timerMatch.Check() && waiting.size() >= TOTALPLAYERS) { // Si existeixen mes de 2 jugadors
+					int idmatch = -1;
+					int bestScore = 100;
 					for (int i = 0; i < waiting.size(); i++) // Matchmaking
 					{
 						for (int j = i; j < waiting.size(); j++)
@@ -244,57 +262,115 @@ int main()
 							{
 								int absoluteScore = waiting[i].score - waiting[j].score;
 								if (absoluteScore < 0) absoluteScore = -absoluteScore;
-
-								if (absoluteScore <= matchScore)
-								{
-									waiting[i].id = 0;
-									waiting[i].x = 270;
-									waiting[i].matchId = matchNum;
-									playing.push_back(waiting[i]);
-
-									waiting[j].id = 1;
-									waiting[j].x = 800;
-									waiting[j].matchId = matchNum;
-									playing.push_back(waiting[j]);
-
-									OutputMemoryBitStream output1;
-									output1.Write(CONNECTION, TYPE_SIZE);
-									output1.Write(0, ID_SIZE); // 0 per ser la propia
-									output1.Write(waiting[i].id, ID_SIZE);
-									output1.Write(waiting[i].x, POSITION_SIZE);
-									sender.SendMessages(waiting[i].ip, waiting[i].port, output1.GetBufferPtr(), output1.GetByteLength());
-
-									OutputMemoryBitStream output2;
-									output2.Write(CONNECTION, TYPE_SIZE);
-									output2.Write(0, ID_SIZE); // 0 per ser la propia
-									output2.Write(waiting[j].id, ID_SIZE);
-									output2.Write(waiting[j].x, POSITION_SIZE);
-									sender.SendMessages(waiting[j].ip, waiting[j].port, output2.GetBufferPtr(), output2.GetByteLength());
-
-									OutputMemoryBitStream output3;
-									output3.Write(CONNECTION, TYPE_SIZE);
-									output3.Write(1, ID_SIZE); // 1 per ser la propia
-									output3.Write(waiting[i].id, ID_SIZE);
-									output3.Write(waiting[i].x, POSITION_SIZE);
-									sender.SendMessages(waiting[j].ip, waiting[j].port, output3.GetBufferPtr(), output3.GetByteLength());
-									
-									OutputMemoryBitStream output4;
-									output4.Write(CONNECTION, TYPE_SIZE);
-									output4.Write(1, ID_SIZE); // 1 per ser la propia
-									output4.Write(waiting[j].id, ID_SIZE);
-									output4.Write(waiting[j].x, POSITION_SIZE);
-									sender.SendMessages(waiting[i].ip, waiting[i].port, output4.GetBufferPtr(), output4.GetByteLength());
-
-									waiting.erase(waiting.begin() + j);
-									waiting.erase(waiting.begin() + i);
-
-									matchNum++;
-									break;
+								// TODO: Comparar i trobar el mes petit
+								if (absoluteScore < bestScore) {
+									bestScore = absoluteScore;
+									idmatch = j;
 								}
+								
 							}
 						}
+						if (idmatch != -1)
+						{
+							waiting[i].id = 0;
+							waiting[i].x = 270;
+							waiting[i].matchId = matchNum;
+							playing.push_back(waiting[i]);
+
+							waiting[idmatch].id = 1;
+							waiting[j].x = 800;
+							waiting[j].matchId = matchNum;
+							playing.push_back(waiting[j]);
+
+							OutputMemoryBitStream output1;
+							output1.Write(CONNECTION, TYPE_SIZE);
+							output1.Write(0, ID_SIZE); // 0 per ser la propia
+							output1.Write(waiting[i].id, ID_SIZE);
+							output1.Write(waiting[i].x, POSITION_SIZE);
+							sender.SendMessages(waiting[i].ip, waiting[i].port, output1.GetBufferPtr(), output1.GetByteLength());
+
+							OutputMemoryBitStream output2;
+							output2.Write(CONNECTION, TYPE_SIZE);
+							output2.Write(0, ID_SIZE); // 0 per ser la propia
+							output2.Write(waiting[j].id, ID_SIZE);
+							output2.Write(waiting[j].x, POSITION_SIZE);
+							sender.SendMessages(waiting[j].ip, waiting[j].port, output2.GetBufferPtr(), output2.GetByteLength());
+
+							OutputMemoryBitStream output3;
+							output3.Write(CONNECTION, TYPE_SIZE);
+							output3.Write(1, ID_SIZE); // 1 per ser la propia
+							output3.Write(waiting[i].id, ID_SIZE);
+							output3.Write(waiting[i].x, POSITION_SIZE);
+							sender.SendMessages(waiting[j].ip, waiting[j].port, output3.GetBufferPtr(), output3.GetByteLength());
+
+							OutputMemoryBitStream output4;
+							output4.Write(CONNECTION, TYPE_SIZE);
+							output4.Write(1, ID_SIZE); // 1 per ser la propia
+							output4.Write(waiting[j].id, ID_SIZE);
+							output4.Write(waiting[j].x, POSITION_SIZE);
+							sender.SendMessages(waiting[i].ip, waiting[i].port, output4.GetBufferPtr(), output4.GetByteLength());
+
+							waiting.erase(waiting.begin() + j);
+							waiting.erase(waiting.begin() + i);
+
+							matchNum++;
+
+
+							break;
+						}
 					}
+					timerMatch.Start(5000);
 				}
+
+				//if (absoluteScore <= matchScore)
+				//{
+				//	waiting[i].id = 0;
+				//	waiting[i].x = 270;
+				//	waiting[i].matchId = matchNum;
+				//	playing.push_back(waiting[i]);
+
+				//	waiting[j].id = 1;
+				//	waiting[j].x = 800;
+				//	waiting[j].matchId = matchNum;
+				//	playing.push_back(waiting[j]);
+
+				//	OutputMemoryBitStream output1;
+				//	output1.Write(CONNECTION, TYPE_SIZE);
+				//	output1.Write(0, ID_SIZE); // 0 per ser la propia
+				//	output1.Write(waiting[i].id, ID_SIZE);
+				//	output1.Write(waiting[i].x, POSITION_SIZE);
+				//	sender.SendMessages(waiting[i].ip, waiting[i].port, output1.GetBufferPtr(), output1.GetByteLength());
+
+				//	OutputMemoryBitStream output2;
+				//	output2.Write(CONNECTION, TYPE_SIZE);
+				//	output2.Write(0, ID_SIZE); // 0 per ser la propia
+				//	output2.Write(waiting[j].id, ID_SIZE);
+				//	output2.Write(waiting[j].x, POSITION_SIZE);
+				//	sender.SendMessages(waiting[j].ip, waiting[j].port, output2.GetBufferPtr(), output2.GetByteLength());
+
+				//	OutputMemoryBitStream output3;
+				//	output3.Write(CONNECTION, TYPE_SIZE);
+				//	output3.Write(1, ID_SIZE); // 1 per ser la propia
+				//	output3.Write(waiting[i].id, ID_SIZE);
+				//	output3.Write(waiting[i].x, POSITION_SIZE);
+				//	sender.SendMessages(waiting[j].ip, waiting[j].port, output3.GetBufferPtr(), output3.GetByteLength());
+
+				//	OutputMemoryBitStream output4;
+				//	output4.Write(CONNECTION, TYPE_SIZE);
+				//	output4.Write(1, ID_SIZE); // 1 per ser la propia
+				//	output4.Write(waiting[j].id, ID_SIZE);
+				//	output4.Write(waiting[j].x, POSITION_SIZE);
+				//	sender.SendMessages(waiting[i].ip, waiting[i].port, output4.GetBufferPtr(), output4.GetByteLength());
+
+				//	waiting.erase(waiting.begin() + j);
+				//	waiting.erase(waiting.begin() + i);
+
+				//	matchNum++;
+
+
+				//	break;
+				//}
+
 			//}
 			//else
 			//{
