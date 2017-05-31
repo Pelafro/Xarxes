@@ -557,7 +557,7 @@ int main()
 
 				player[0].ready = 1;
 				//state = play;
-				//std::cout << "play " << player[0].x << " " << player[1].x << std::endl;
+				std::cout << "playing " << player[0].x << " against " << player[1].x << std::endl;
 			}
 		}
 					  break;
@@ -569,171 +569,6 @@ int main()
 
 			//-- MOVEMENT --//
 			sf::Keyboard key;
-			/*if (event.type == sf::Event::KeyPressed) {
-				//if (key.isKeyPressed(sf::Keyboard::Right)) 
-				if (event.key.code == sf::Keyboard::Right)
-				{
-					int movement = 2;
-					int distance = player[1].x - (player[0].x + movement);
-					if (distance < 0) distance = -distance;
-					if (distance > DISTANCIA_BODY)
-					{
-						if ((player[0].x + movement) < RIGHT_LIMIT)
-						{
-							player[0].x += movement;
-							player[0].accum.back().delta += movement;
-						}
-					}
-
-				}
-				//if (key.isKeyPressed(sf::Keyboard::Left)) 
-				else if (event.key.code == sf::Keyboard::Left)
-				{
-					int movement = -2;
-					int distance = player[1].x - (player[0].x + movement);
-					if (distance < 0) distance = -distance;
-					if (distance > DISTANCIA_BODY)
-					{
-						if ((player[0].x + movement) > LEFT_LIMIT)
-						{
-							player[0].x += movement;
-							player[0].accum.back().delta += movement;
-						}
-					}
-				}
-			}
-			if (event.type == sf::Event::KeyReleased)
-			{
-				//if (key.isKeyPressed(sf::Keyboard::Z) && player[0].attack == 0 && !attacking)
-					if (event.key.code == sf::Keyboard::Z && !attacking && player[0].attack == 0)
-					{
-						attacking = true;
-						std::cout << player[0].attack;
-						player[0].attack = 1;
-
-						player[0].top->play(player[0].animation[player[0].attack]);
-
-						OutputMemoryBitStream output;
-						output.Write(ATTACK, TYPE_SIZE);
-						output.Write(player[0].id, ID_SIZE);
-						output.Write(player[0].attack, ATTACK_SIZE);
-
-						sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
-
-					}
-					else if (event.key.code == sf::Keyboard::Z && player[0].attack != 0 && player[0].top->getAnimation() != &player[0].animation[Top])
-					{
-						player[0].attack = 0;
-					}
-
-				//if (key.isKeyPressed(sf::Keyboard::X) && player[0].attack == 0 && !attacking)
-				else if (event.key.code == sf::Keyboard::X && !attacking && player[0].attack == 0)
-				{
-					attacking = true;
-					player[0].attack = 2;
-
-					player[0].top->play(player[0].animation[player[0].attack]);
-
-					OutputMemoryBitStream output;
-					output.Write(ATTACK, TYPE_SIZE);
-					output.Write(player[0].id, ID_SIZE);
-					output.Write(player[0].attack, ATTACK_SIZE);
-
-					sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
-				}
-				else if (event.key.code == sf::Keyboard::X && player[0].attack != 0 && player[0].top->getAnimation() != &player[0].animation[Mid])
-				{
-					player[0].attack = 0;
-				}
-
-				//if (key.isKeyPressed(sf::Keyboard::C) && player[0].attack == 0 && !attacking)
-				else if (event.key.code == sf::Keyboard::C && !attacking && player[0].attack == 0)
-				{
-					attacking = true;
-					player[0].attack = 3;
-
-					player[0].top->play(player[0].animation[player[0].attack]);
-
-					OutputMemoryBitStream output;
-					output.Write(ATTACK, TYPE_SIZE);
-					output.Write(player[0].id, ID_SIZE);
-					output.Write(player[0].attack, ATTACK_SIZE);
-
-					sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
-				}
-				else if (event.key.code == sf::Keyboard::C && player[0].attack != 0 && player[0].top->getAnimation() != &player[0].animation[Bot])
-				{
-					player[0].attack = 0;
-				}
-			}
-			/*if (player[0].attack != 0)
-			{*/
-
-				/*if (player[0].top->m_currentFrame == 12)
-				{
-					attacking = false;
-					OutputMemoryBitStream output;
-					output.Write(ATTACK, TYPE_SIZE);
-					output.Write(player[0].id, ID_SIZE);
-					output.Write(player[0].attack, ATTACK_SIZE);
-
-					sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
-					player[0].attack = 0;
-				}*/
-
-			//}
-
-			//-- ACCUMULATED --//
-
-			////-- PLAYER --////
-
-			/*if (timerAccum.Check())
-			{
-				if (player[0].accum.back().delta != 0)
-				{
-					//int negative = 0; // 0 = positiu, 1 = negatiu
-					if (player[0].accum.back().delta < 0) {
-						player[0].accum.back().sign = 1;
-						player[0].accum.back().delta = -player[0].accum.back().delta;
-					}
-
-					player[0].accum.back().absolute = player[0].x;			// Marco el absolut del moviment
-					OutputMemoryBitStream output;
-					output.Write(MOVEMENT, TYPE_SIZE);
-					output.Write(player[0].id, ID_SIZE);
-					output.Write(player[0].accum.back().id, ACCUM_ID_SIZE);
-					output.Write(player[0].accum.back().sign, ID_SIZE);
-					output.Write(player[0].accum.back().delta, ACCUM_DELTA_SIZE);
-					output.Write(player[0].accum.back().absolute, POSITION_SIZE);
-
-					//std::cout << "Enviat " << player[0].accum.back().delta << std::endl;
-
-					sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
-
-					Accum accumtmp;										// Creo nou acumulat
-					if (player[0].accum.back().id == 15) accumtmp.id = 0;	// Si el ultim acumulat te id 15, el nou torna a 0
-					else accumtmp.id = player[0].accum.back().id + 1;     // Sino, el id es un mes que l'anterior
-
-					player[0].accum.push_back(accumtmp);
-				}
-				timerAccum.Start(ACCUMTIME);
-			}*/
-
-			////-- ENEMY --////
-
-			/*if (!player[1].accum.empty())
-			{
-				int movement = 2;
-				if (player[1].accum.front().absolute != player[1].x)
-				{
-					if (player[1].accum.front().delta < 0) movement = -movement;
-					player[1].x += movement;
-				}
-				else
-				{
-					player[1].accum.erase(player[1].accum.begin());
-				}
-			}*/
 
 			if (attack)
 			{
@@ -768,6 +603,7 @@ int main()
 					}
 					state = connect;
 					searching = false;
+					player[0].ready = 0;
 					std::cout << std::endl << "Press enter to search for an opponent" << std::endl;
 					com.pop();
 					break;

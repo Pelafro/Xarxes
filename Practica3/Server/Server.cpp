@@ -133,8 +133,8 @@ int main()
 										OutputMemoryBitStream output;
 										output.Write(PLAY, TYPE_SIZE);
 										std::cout << std::endl << "envia play";
-										sender.SendMessages(player[i].ip, player[i].port, output.GetBufferPtr(), output.GetByteLength());
-										sender.SendMessages(player[j].ip, player[j].port, output.GetBufferPtr(), output.GetByteLength());
+										sender.SendMessages(playing[i].ip, playing[i].port, output.GetBufferPtr(), output.GetByteLength());
+										sender.SendMessages(playing[j].ip, playing[j].port, output.GetBufferPtr(), output.GetByteLength());
 									}
 								}
 								break;
@@ -217,61 +217,6 @@ int main()
 								playing.erase(playing.begin() + i);
 							}
 						}
-						/*if (player[com.front().id].attack == 0)
-						{
-							player[com.front().id].attack = com.front().position;
-
-							OutputMemoryBitStream output;
-							output.Write(ATTACK, TYPE_SIZE);
-							output.Write(player[com.front().id].id, ID_SIZE);
-							output.Write(player[com.front().id].attack, ATTACK_SIZE);
-
-							if (com.front().id == 0)
-							{
-								sender.SendMessages(player[1].ip, player[1].port, output.GetBufferPtr(), output.GetByteLength());
-							}
-							else
-							{
-								sender.SendMessages(player[0].ip, player[0].port, output.GetBufferPtr(), output.GetByteLength());
-							}
-
-							com.pop();
-						}
-						else
-						{
-							int distance = player[0].x - player[1].x;
-							if (distance < 0) distance = -distance;
-							if (distance < DISTANCE_ATTACK)
-							{
-								player[com.front().id].score++;
-
-								player[0].x = player[0].originalX;
-								player[1].x = player[1].originalX;
-
-								OutputMemoryBitStream output;
-								output.Write(SCORE, TYPE_SIZE);
-								output.Write(player[com.front().id].id, ID_SIZE);
-
-								if (!com.empty())
-								{
-									while (!com.empty())
-									{
-										com.pop();
-									}
-								}
-
-								for (int k = 0; k < player.size(); k++)
-								{
-									sender.SendMessages(player[k].ip, player[k].port, output.GetBufferPtr(), output.GetByteLength());
-								}
-							}
-							else
-							{
-								com.pop();
-							}
-							player[com.front().id].attack = 0;
-							//player[1].attack = 0;
-						}*/
 
 						com.pop();
 
@@ -388,77 +333,6 @@ int main()
 					}
 					timerMatch.Start(5000);
 				}
-
-			//}
-			//else
-			//{
-				/*if (timerReady.Check()) {
-					OutputMemoryBitStream output;
-					output.Write(CONNECTION, TYPE_SIZE);
-					output.Write(player[0].id, ID_SIZE);
-					output.Write(player[0].x, POSITION_SIZE);
-					sender.SendMessages(player[1].ip, player[1].port, output.GetBufferPtr(), output.GetByteLength());
-					for (int i = 0; i < player[1].keyComs.size(); i++)
-					{
-						if (player[1].keyComs[i].type == CONNECTION) {
-							break;
-						}
-						else if (i == player[1].keyComs.size() - 1) {
-							Command comtmp;
-							comtmp.type = CONNECTION;
-							player[1].keyComs.push_back(comtmp);
-						}
-					}
-					OutputMemoryBitStream output2;
-					output2.Write(CONNECTION, TYPE_SIZE);
-					output2.Write(player[1].id, ID_SIZE);
-					output2.Write(player[1].x, POSITION_SIZE);
-					sender.SendMessages(player[0].ip, player[0].port, output2.GetBufferPtr(), output2.GetByteLength());
-					for (int i = 0; i < player[0].keyCommands.size(); i++)
-					{
-						if (player[0].keyComs[i].type == CONNECTION) {
-							break;
-						}
-						else if (i == player[0].keyComs.size() - 1) {
-							Command comtmp;
-							comtmp.type = CONNECTION;
-							player[0].keyComs.push_back(comtmp);
-						}
-					}
-					timerReady.Start(5000);
-				}*/
-				//mutex.lock();
-				/*if (!com.empty()) {
-					switch (com.front().type) {
-					case HELLO:
-						playersConected = false;
-						
-						//clientCommands.pop();
-						break;
-					case CONNECTION:	// Un client es vol conectar
-
-						player[com.front().id].ready = 1;
-						for (int i = 0; i < player[com.front().id].keyComs.size(); i++) // Recorrer tots els keycommands
-						{
-							if (player[com.front().id].keyComs[i].type == CONNECTION) {								// si es un keycommand de ready							
-								for (int j = 0; j < player[com.front().id].keyComs.size(); j++)
-								{
-									player[com.front().id].keyComs.erase(player[com.front().id].keyComs.begin() + j);	// borral
-									//std::cout << "All messages deleted for player " << com.front().id << std::endl;
-								}							
-								break;
-							}
-						}
-						com.pop();
-						break;
-					}
-				}*/
-				//mutex.unlock();
-				/*if (player[0].ready == 1 && player[1].ready == 1)
-				{
-					state = play;
-				}*/
-			//}
 		}
 			break;
 
