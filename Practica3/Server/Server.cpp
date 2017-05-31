@@ -108,7 +108,7 @@ int main()
 						for (int i = 0; i < player.size(); i++)
 						{
 							if (player[i].id == id)
-							{
+							{ 
 								waiting.push_back(player[i]);
 								break;
 							}
@@ -198,24 +198,23 @@ int main()
 							if (playing[i].id == com.front().id)
 							{
 								matchid = playing[i].matchId;
-
-								playing.erase(playing.begin() + i);
+					
 								OutputMemoryBitStream output;
 								output.Write(DISCONNECTION, TYPE_SIZE);
-								sender.SendMessages(player[i].ip, player[i].port, output.GetBufferPtr(), output.GetByteLength());
+								sender.SendMessages(playing[i].ip, playing[i].port, output.GetBufferPtr(), output.GetByteLength());
+								playing.erase(playing.begin() + i);
 								break;
 							}
-
 						}
 					
 						for (int i = 0; i < playing.size(); i++) // Busca el contrincant i desconectarlo
 						{
 							if (playing[i].id != com.front().id && playing[i].matchId == matchid)
 							{
-								playing.erase(playing.begin() + i);
 								OutputMemoryBitStream output;
 								output.Write(DISCONNECTION, TYPE_SIZE);
-								sender.SendMessages(player[i].ip, player[i].port, output.GetBufferPtr(), output.GetByteLength());
+								sender.SendMessages(playing[i].ip, playing[i].port, output.GetBufferPtr(), output.GetByteLength());
+								playing.erase(playing.begin() + i);
 							}
 						}
 						/*if (player[com.front().id].attack == 0)
@@ -296,11 +295,11 @@ int main()
 						for (int i = 0; i < playing.size(); i++) // Busca el contrincant
 						{
 							if (playing[i].id != com.front().id && playing[i].matchId == matchid)
-							{
-								playing.erase(playing.begin() + i);
+							{								
 								OutputMemoryBitStream output;
 								output.Write(DISCONNECTION, TYPE_SIZE);
-								sender.SendMessages(player[i].ip, player[i].port, output.GetBufferPtr(), output.GetByteLength());
+								sender.SendMessages(playing[i].ip, playing[i].port, output.GetBufferPtr(), output.GetByteLength());
+								playing.erase(playing.begin() + i);
 								break;
 							}
 						}

@@ -373,18 +373,24 @@ int main()
 	{
 		std::cout << "Can't load the font file" << std::endl;
 	}
-	sf::Text text1(/*std::to_string(puntsJugador1)*/"0", font, 50); //Aqui va la variable de puntuacio de cada jugador
-	//text1.setColor(sf::Color::White);
-	text1.setPosition(150, 750);
-	sf::Text text2(/*std::to_string(puntsJugador2)*/"0", font, 50);
-	//text2.setColor(sf::Color::White);
-	text2.setPosition(1450, 750);
-	sf::Text PointText("", font, 100);
-	PointText.setPosition(300, 250);
+	sf::Text text1("0", font, 50); //Aqui va la variable de puntuacio de cada jugador/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	text1.setPosition(20, 250);
+
+	sf::Text text2("0", font, 50);
+	text2.setPosition(20, 300);
+
+	sf::Text PointText("Lobby: ", font, 70);
+	PointText.setPosition(120, 50);
+
+
+	/*sf::Text timeText(std::to_string(TIME), font, 100);
+	PointText.setPosition(150, 100);*/
+
+	Timer TimeToFinish;
 	sf::Text Instructions("Prem 'ENTER' per iniciar la propera ronda", font, 30);
 	Instructions.setPosition(300, 750);
 
-	sf::Vector2i screenDimensions(1600, 900);											// Dimensions pantalles
+	sf::Vector2i screenDimensions(512, 512);											// Dimensions pantalles
 	sf::RenderWindow window;															// Creem la finestra del joc
 	window.create(sf::VideoMode(screenDimensions.x, screenDimensions.y), "Aoi Samurai");	// Obrim la finestra del joc
 	window.setFramerateLimit(60); //FrameRate
@@ -393,8 +399,12 @@ int main()
 
 	bool attacking = false;
 	bool searching = false;
+
+	bool attack = false;
+
 	while (window.isOpen())
 	{
+		attack = false;
 		sf::Event event; //Si no la finestra no detecta el ratolí i no es pot moure
 		while (window.pollEvent(event))
 		{
@@ -404,6 +414,10 @@ int main()
 			{
 				if (event.key.code == sf::Keyboard::Escape)
 				{
+					OutputMemoryBitStream output;
+					output.Write(DISCONNECTION, TYPE_SIZE);
+					output.Write(player[0].id, ACCUM_DELTA_SIZE);
+					sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
 					window.close();
 				}
 				if (event.key.code == sf::Keyboard::Return && !searching)
@@ -415,6 +429,10 @@ int main()
 					std::cout << std::endl << "Waiting for oponent" << std::endl;
 
 					searching = true;
+				}
+				if (event.key.code == sf::Keyboard::Z)
+				{
+					attack = true;
 				}
 			}
 		}
@@ -551,7 +569,7 @@ int main()
 
 			//-- MOVEMENT --//
 			sf::Keyboard key;
-			if (event.type == sf::Event::KeyPressed) {
+			/*if (event.type == sf::Event::KeyPressed) {
 				//if (key.isKeyPressed(sf::Keyboard::Right)) 
 				if (event.key.code == sf::Keyboard::Right)
 				{
@@ -651,7 +669,7 @@ int main()
 			/*if (player[0].attack != 0)
 			{*/
 
-				if (player[0].top->m_currentFrame == 12)
+				/*if (player[0].top->m_currentFrame == 12)
 				{
 					attacking = false;
 					OutputMemoryBitStream output;
@@ -661,7 +679,7 @@ int main()
 
 					sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
 					player[0].attack = 0;
-				}
+				}*/
 
 			//}
 
@@ -669,7 +687,7 @@ int main()
 
 			////-- PLAYER --////
 
-			if (timerAccum.Check())
+			/*if (timerAccum.Check())
 			{
 				if (player[0].accum.back().delta != 0)
 				{
@@ -699,11 +717,11 @@ int main()
 					player[0].accum.push_back(accumtmp);
 				}
 				timerAccum.Start(ACCUMTIME);
-			}
+			}*/
 
 			////-- ENEMY --////
 
-			if (!player[1].accum.empty())
+			/*if (!player[1].accum.empty())
 			{
 				int movement = 2;
 				if (player[1].accum.front().absolute != player[1].x)
@@ -715,6 +733,14 @@ int main()
 				{
 					player[1].accum.erase(player[1].accum.begin());
 				}
+			}*/
+
+			if (attack)
+			{
+				OutputMemoryBitStream output;
+				output.Write(ATTACK, TYPE_SIZE);
+				output.Write(player[0].id, ID_SIZE);
+				sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
 			}
 
 			//-- COMMANDS --//
@@ -731,6 +757,18 @@ int main()
 					output.Write(CONNECTION, TYPE_SIZE);
 					output.Write(player[0].id, ID_SIZE);
 					sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
+					com.pop();
+					break;
+				}
+				case DISCONNECTION: {
+
+					for (int i = 0; i < player.size(); i++)
+					{
+						player[i].x = 0;
+					}
+					state = connect;
+					searching = false;
+					std::cout << std::endl << "Press enter to search for an opponent" << std::endl;
 					com.pop();
 					break;
 				}
