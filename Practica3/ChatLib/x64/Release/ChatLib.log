@@ -1,9 +1,8 @@
-﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppClean.targets(76,5): warning : The process cannot access the file 'c:\users\pjandula\documents\github\xarxes\practica3\chatlib\x64\release\chatlib.pdb' because it is being used by another process.
-  MessageManager.cpp
+﻿  MessageManager.cpp
   Send.cpp
 Send.cpp(17): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
 sfml-window.lib(sfml-window-2.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in sfml-graphics.lib(sfml-graphics-2.dll); second definition ignored
 sfml-system.lib(sfml-system-2.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in sfml-graphics.lib(sfml-graphics-2.dll); second definition ignored
 sfml-network.lib(sfml-network-2.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in sfml-graphics.lib(sfml-graphics-2.dll); second definition ignored
 ws2_32.lib(WS2_32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in sfml-graphics.lib(sfml-graphics-2.dll); second definition ignored
-  ChatLib.vcxproj -> C:\Users\pjandula\Documents\GitHub\Xarxes\Practica3\x64\Release\ChatLib.lib
+  ChatLib.vcxproj -> E:\Xarxes\Practica3\x64\Release\ChatLib.lib

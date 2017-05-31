@@ -464,7 +464,7 @@ public:
 				case ATTACK:
 				{
 					newCommand.Read(&comtmp.id, ID_SIZE);
-					newCommand.Read(&comtmp.position, ATTACK_SIZE); // quin atac a fet. // 0=Idle 1=Top 2=Mid 3=Bot
+					//newCommand.Read(&comtmp.position, ATTACK_SIZE); // quin atac a fet. // 0=Idle 1=Top 2=Mid 3=Bot
 				}
 				break;
 
@@ -536,7 +536,6 @@ public:
 
 				case DISCONNECTION:
 				{
-					newCommand.Read(&comtmp.id, ID_SIZE);
 				}
 				break;
 
