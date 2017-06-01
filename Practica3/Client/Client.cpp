@@ -373,13 +373,13 @@ int main()
 	{
 		std::cout << "Can't load the font file" << std::endl;
 	}
-	sf::Text text1("0", font, 50); //Aqui va la variable de puntuacio de cada jugador/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	sf::Text text1("Z", font, 50); //Aqui va la variable de puntuacio de cada jugador/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	text1.setPosition(20, 250);
 
-	sf::Text text2("0", font, 50);
+	sf::Text text2("Z", font, 50);
 	text2.setPosition(20, 300);
 
-	sf::Text PointText("Lobby: ", font, 70);
+	sf::Text PointText("Lobby", font, 70);
 	PointText.setPosition(120, 50);
 
 
@@ -409,7 +409,13 @@ int main()
 		while (window.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed)
+			{
+				OutputMemoryBitStream output;
+				output.Write(DISCONNECTION, TYPE_SIZE);
+				output.Write(player[0].id, ACCUM_DELTA_SIZE);
+				sender.SendMessages(ip, serverPort, output.GetBufferPtr(), output.GetByteLength());
 				window.close();
+			}
 			if (event.type == sf::Event::KeyPressed)
 			{
 				if (event.key.code == sf::Keyboard::Escape)
@@ -461,10 +467,7 @@ int main()
 					player[0].id = com.front().id;
 					std::cout << std::endl << "Press enter to search for an opponent" << std::endl;
 					timerConnect.Stop();
-					/*else
-					{
-						std::cout << std::endl << "Waiting for oponent" << std::endl;
-					}*/
+					text1.setString(std::to_string(player[0].id));
 					
 
 					com.pop();
@@ -493,6 +496,8 @@ int main()
 				{
 					state = play;
 
+					PointText.setString("Game");
+
 					com.pop();
 				}
 				break;
@@ -501,7 +506,6 @@ int main()
 			}
 			if (player[0].x != 0 && player[1].x != 0 && player[0].ready == 0)
 			{
-				// TODO: Comprobacions de que es te tot
 				if (player[0].id == 1)
 				{
 					player[0].top = &p2Top;
@@ -550,6 +554,7 @@ int main()
 
 				player[1].bot->play(player[1].animation[Leg]);
 
+
 				OutputMemoryBitStream output;
 				output.Write(CONNECTION, TYPE_SIZE);
 				output.Write(player[0].id, ID_SIZE);
@@ -557,7 +562,7 @@ int main()
 
 				player[0].ready = 1;
 				//state = play;
-				std::cout << "playing " << player[0].x << " against " << player[1].x << std::endl;
+				std::cout << "playing " << player[0].id << " against " << player[1].id << std::endl;
 			}
 		}
 					  break;
@@ -566,6 +571,8 @@ int main()
 				   break;
 
 		case play: {
+
+			
 
 			//-- MOVEMENT --//
 			sf::Keyboard key;
@@ -605,6 +612,7 @@ int main()
 					searching = false;
 					player[0].ready = 0;
 					std::cout << std::endl << "Press enter to search for an opponent" << std::endl;
+					PointText.setString("Lobby");
 					com.pop();
 					break;
 				}
@@ -686,6 +694,11 @@ int main()
 				}
 				break;
 
+				case PLAY:
+				{
+					com.pop();
+				}
+				break;
 				default:
 					break;
 
@@ -725,19 +738,19 @@ int main()
 			player[1].bot->update(frameTime);
 			player[1].bot->setPosition(player[1].x, player[1].y + 275);
 			window.draw(*player[1].bot);
+
+			text2.setString(std::to_string(player[1].id));
+			
+			window.draw(text2);
 		}
 		window.draw(herba);
 
 		PSAnimated.update(frameTime); //Actualitzem el sistema de particules
 		window.draw(PSAnimated); //Pintem el sistema de particules, s'ha de cridar amb PSAnimated.play(PSBasic)
+
+		window.draw(PointText);
+
 		window.draw(text1); //Text de puntuacions
-		window.draw(text2);
-
-		if (state == points || state == win) { //Pintem el text si el estat es point o win
-			window.draw(PointText);
-			window.draw(Instructions);
-		}
-
 		window.display();		// Mostrem per la finestra
 		window.clear();			// Netejem finestra
 	}

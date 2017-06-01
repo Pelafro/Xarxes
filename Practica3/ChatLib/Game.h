@@ -290,7 +290,7 @@ Només per Client*/
 class Player {
 
 public:
-	int id = 0;
+	int id = -1;
 	int x = 0;
 	int originalX = 0;
 	int y;
@@ -524,7 +524,7 @@ public:
 				case CONNECTION:
 				{
 					newCommand.Read(&comtmp.accum.id, ID_SIZE); // Guardem en accum id si es un conection propi o del enemic
-					newCommand.Read(&comtmp.id, ID_SIZE);
+					newCommand.Read(&comtmp.id, ACCUM_ID_SIZE);
 					newCommand.Read(&comtmp.position, POSITION_SIZE);
 				}
 				break;
@@ -542,7 +542,7 @@ public:
 				case MOVEMENT:
 				{
 					newCommand.Read(&comtmp.id, ID_SIZE);			// ID del player
-					newCommand.Read(&comtmp.accum.id, ACCUM_ID_SIZE);		// ID del acumulat
+					newCommand.Read(&comtmp.accum.id, ACCUM_DELTA_SIZE);		// ID del acumulat
 					newCommand.Read(&comtmp.accum.sign, ID_SIZE);	// Signe del acumulat
 					newCommand.Read(&comtmp.accum.delta, ACCUM_DELTA_SIZE);	// Accumulat
 					newCommand.Read(&comtmp.accum.absolute, POSITION_SIZE);	// Absolut

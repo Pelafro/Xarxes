@@ -69,385 +69,105 @@ int main()
 	while (gameOn)
 	{
 		sf::Keyboard key;
-		if (key.isKeyPressed(sf::Keyboard::BackSpace)) { // si el server vol tancar la comunicacio
+		/*if (key.isKeyPressed(sf::Keyboard::BackSpace)) { // si el server vol tancar la comunicacio
 			state = win;
-		}
+		}*/
 		mutex.lock();
 		switch (state) {
 
-	//-- CONECT --//
+			//-- CONECT --//
 		case connect: { // que es conectin els dos jugadors
 			//if (!playersConected) {
 				//mutex.lock();
-				if (!com.empty()) {
-					std::cout << com.size();
-					switch (com.front().type) {
-					case HELLO: {	// Un client es vol conectar
-
-						for (int i = 0; i < player.size(); i++)
-						{
-							if (com.front().accum.id == player[i].id) {	// el jugador que diu Hello
-								OutputMemoryBitStream output;
-								output.Write(HELLO, TYPE_SIZE);
-								output.Write(player[i].id, ACCUM_DELTA_SIZE);
-								sender.SendMessages(player[i].ip, player[i].port, output.GetBufferPtr(), output.GetByteLength());
-
-								std::cout << std::endl << "New Player " << player[i].id;
-
-								break;
-							}
-						}
-						
-						com.pop();
-					}
-						break;
-					case SEARCH:
-					{
-						int id = com.front().id;
-
-						for (int i = 0; i < player.size(); i++)
-						{
-							if (player[i].id == id)
-							{ 
-								waiting.push_back(player[i]);
-								break;
-							}
-						}
-
-						timerMatch.Start(5000); // reiniciem contador matchmaking
-
-						com.pop();
-					}
-					break;
-					case CONNECTION:
-					{
-						for (int i = 0; i < playing.size(); i++)
-						{
-							if (playing[i].id == com.front().id)
-							{
-								playing[i].ready = true;
-								for (int j = 0; j < playing.size(); j++)
-								{
-									if (i != j && playing[i].ready == playing[j].ready)
-									{
-										OutputMemoryBitStream output;
-										output.Write(PLAY, TYPE_SIZE);
-										std::cout << std::endl << "envia play";
-										sender.SendMessages(playing[i].ip, playing[i].port, output.GetBufferPtr(), output.GetByteLength());
-										sender.SendMessages(playing[j].ip, playing[j].port, output.GetBufferPtr(), output.GetByteLength());
-									}
-								}
-								break;
-							}
-						}
-						com.pop();
-					}
-					break;
-					case MOVEMENT: 
-					{
-						Accum accumtmp = com.front().accum;
-
-						int threshold = 6; // Maximum error able to forgive
-						for (int i = -threshold; i < threshold; i++)
-						{
-							int distance;
-							if (com.front().id == 0)
-							{
-								distance = accumtmp.absolute - player[1].x;
-							}
-							else {
-								distance = accumtmp.absolute - player[0].x;
-							}
-							if (distance < 0) distance = -distance;
-							if (accumtmp.absolute > LEFT_LIMIT && accumtmp.absolute < RIGHT_LIMIT && distance > DISTANCIA_BODY) {
-								if ((player[com.front().id].x + accumtmp.delta + i) == accumtmp.absolute) { // si esta dins de la posicio que estem disposats a accpetar
-									player[com.front().id].x = accumtmp.absolute;
-									player[com.front().id].accum.push_back(accumtmp);
-
-									OutputMemoryBitStream output;
-									output.Write(MOVEMENT, TYPE_SIZE);
-									output.Write(com.front().id, ID_SIZE);
-									output.Write(player[com.front().id].accum.back().id, ACCUM_ID_SIZE);
-									output.Write(player[com.front().id].accum.back().sign, ID_SIZE);
-									if (player[com.front().id].accum.back().delta < 0)
-										output.Write(-player[com.front().id].accum.back().delta, ACCUM_DELTA_SIZE);
-									else
-										output.Write(player[com.front().id].accum.back().delta, ACCUM_DELTA_SIZE);
-									output.Write(player[com.front().id].accum.back().absolute, POSITION_SIZE);
-
-									//std::cout << "Delta received: " << com.front().accum.delta << std::endl;
-
-									for (int k = 0; k < player.size(); k++)
-									{
-										sender.SendMessages(player[k].ip, player[k].port, output.GetBufferPtr(), output.GetByteLength());
-									}
-								}
-							}
-						}
-						//accumtmp.absolute = player[com.front().id].x + accumtmp.delta;
-
-						com.pop();
-
-					}
-					break;
-					case ATTACK: {
-
-						int matchid;
-						for (int i = 0; i < playing.size(); i++) // Busca el matchid i desconectar jugador
-						{
-							if (playing[i].id == com.front().id)
-							{
-								matchid = playing[i].matchId;
-					
-								OutputMemoryBitStream output;
-								output.Write(DISCONNECTION, TYPE_SIZE);
-								sender.SendMessages(playing[i].ip, playing[i].port, output.GetBufferPtr(), output.GetByteLength());
-								playing.erase(playing.begin() + i);
-								break;
-							}
-						}
-					
-						for (int i = 0; i < playing.size(); i++) // Busca el contrincant i desconectarlo
-						{
-							if (playing[i].id != com.front().id && playing[i].matchId == matchid)
-							{
-								OutputMemoryBitStream output;
-								output.Write(DISCONNECTION, TYPE_SIZE);
-								sender.SendMessages(playing[i].ip, playing[i].port, output.GetBufferPtr(), output.GetByteLength());
-								playing.erase(playing.begin() + i);
-							}
-						}
-
-						com.pop();
-
-					}
-					break;
-					case DISCONNECTION: {
-
-						int matchid;
-						int id1;
-						for (int i = 0; i < playing.size(); i++) // Busca el matchid
-						{
-							if (playing[i].id == com.front().id)
-							{
-								matchid = playing[i].matchId;
-								playing.erase(playing.begin() + i);
-								id1 = i;
-								break;
-							}
-						}
-
-						for (int i = 0; i < playing.size(); i++) // Busca el contrincant
-						{
-							if (playing[i].id != com.front().id && playing[i].matchId == matchid)
-							{								
-								OutputMemoryBitStream output;
-								output.Write(DISCONNECTION, TYPE_SIZE);
-								sender.SendMessages(playing[i].ip, playing[i].port, output.GetBufferPtr(), output.GetByteLength());
-								playing.erase(playing.begin() + i);
-								break;
-							}
-						}
-						
-						for (int i = 0; i < player.size(); i++) // elimina el que ha marxat
-						{
-							if (player[i].id == id1)
-							{
-								player.erase(player.begin() + i);
-								break;
-							}
-						}
-
-						com.pop();
-
-					}
-										break;
-					}
-				}
-				if (timerMatch.Check() && waiting.size() >= TOTALPLAYERS) { // Si existeixen mes de 2 jugadors
-					int idmatch = -1;
-					int bestScore = 100;
-					for (int i = 0; i < waiting.size(); i++) // Matchmaking
-					{
-						for (int j = i; j < waiting.size(); j++)
-						{
-							if (i != j)
-							{
-								int absoluteScore = waiting[i].score - waiting[j].score;
-								if (absoluteScore < 0) absoluteScore = -absoluteScore;
-								if (absoluteScore < bestScore) {
-									bestScore = absoluteScore;
-									idmatch = j;
-								}
-								
-							}
-						}
-						if (idmatch != -1)
-						{
-							waiting[i].id = 0;
-							waiting[i].x = 270;
-							waiting[i].matchId = matchNum;
-							playing.push_back(waiting[i]);
-
-							waiting[idmatch].id = 1;
-							waiting[idmatch].x = 800;
-							waiting[idmatch].matchId = matchNum;
-							playing.push_back(waiting[idmatch]);
-
-							OutputMemoryBitStream output1;
-							output1.Write(CONNECTION, TYPE_SIZE);
-							output1.Write(0, ID_SIZE); // 0 per ser la propia
-							output1.Write(waiting[i].id, ID_SIZE);
-							output1.Write(waiting[i].x, POSITION_SIZE);
-							sender.SendMessages(waiting[i].ip, waiting[i].port, output1.GetBufferPtr(), output1.GetByteLength());
-
-							OutputMemoryBitStream output2;
-							output2.Write(CONNECTION, TYPE_SIZE);
-							output2.Write(0, ID_SIZE); // 0 per ser la propia
-							output2.Write(waiting[idmatch].id, ID_SIZE);
-							output2.Write(waiting[idmatch].x, POSITION_SIZE);
-							sender.SendMessages(waiting[idmatch].ip, waiting[idmatch].port, output2.GetBufferPtr(), output2.GetByteLength());
-
-							OutputMemoryBitStream output3;
-							output3.Write(CONNECTION, TYPE_SIZE);
-							output3.Write(1, ID_SIZE); // 1 per ser la propia
-							output3.Write(waiting[i].id, ID_SIZE);
-							output3.Write(waiting[i].x, POSITION_SIZE);
-							sender.SendMessages(waiting[idmatch].ip, waiting[idmatch].port, output3.GetBufferPtr(), output3.GetByteLength());
-
-							OutputMemoryBitStream output4;
-							output4.Write(CONNECTION, TYPE_SIZE);
-							output4.Write(1, ID_SIZE); // 1 per ser la propia
-							output4.Write(waiting[idmatch].id, ID_SIZE);
-							output4.Write(waiting[idmatch].x, POSITION_SIZE);
-							sender.SendMessages(waiting[i].ip, waiting[i].port, output4.GetBufferPtr(), output4.GetByteLength());
-
-							waiting.erase(waiting.begin() + idmatch);
-							waiting.erase(waiting.begin() + i);
-
-							matchNum++;
-
-
-							break;
-						}
-					}
-					timerMatch.Start(5000);
-				}
-		}
-			break;
-
-	//-- PLAY --//
-
-		case play: {
-			//mutex.lock();
-			////-- PING --////
-
-			if (timerPing.Check()) {
-				// Check si un o els dos jugadors s'ha desconectat
-				bool toConect = false;
-				for (int i = 0; i < TOTALPLAYERS; i++)
-				{
-					for (int j = 0; j < player[i].keyComs.size(); j++)
-					{
-						if (player[i].keyComs[j].type == PING) {
-							OutputMemoryBitStream output;
-							output.Write(DISCONNECTION, TYPE_SIZE);
-							output.Write(i, ID_SIZE); // Misatge que s'ha desconectat el jugador i
-
-							//std::cout << "player " << i << " seems to be disconected" << std::endl;
-
-							for (int k = 0; k < player.size(); k++)
-							{
-								sender.SendMessages(player[k].ip, player[k].port, output.GetBufferPtr(), output.GetByteLength());
-							}
-
-							player.erase(player.begin() + i);
-							toConect = true;
-						}
-					}
-				}
-				if (toConect) { // si hi ha algun jugador desconectat
-					state = connect;
-				}
-				else {
-					OutputMemoryBitStream output;
-					output.Write(PING, TYPE_SIZE);
-					bool foundMessage = false;									// Per saber si hi ha un misatge igual
-					for (int k = 0; k < player.size(); k++)
-					{
-						sender.SendMessages(player[k].ip, player[k].port, output.GetBufferPtr(), output.GetByteLength());
-						for (int l = 0; l < player[k].keyComs.size(); l++)
-						{
-							if ( player[k].keyComs[l].type == PING) {
-								foundMessage = true;
-								break;
-							}
-						}
-						if (!foundMessage)
-						{
-							Command com;
-							com.type = PING;
-							player[k].keyComs.push_back(com);
-						}
-
-						foundMessage = false;
-					}
-					
-					timerPing.Start(3000);
-				}
-
-			}
-
-			////-- CLIENT COMMANDS --////
-
-			
 			if (!com.empty()) {
-				
-				//std::cout << "And now Client Case is " << com.front().type << std::endl;
-
+				//std::cout << com.size();
 				switch (com.front().type) {
-
 				case HELLO: {	// Un client es vol conectar
-					state = connect;
-					com.pop();
-				}
-					break;
 
-				case CONNECTION: {
-					com.pop();
-				}
-					break;
-
-				case PING: {
-					//std::cout << "Player " << com.front().id << " Pinged" << std::endl;
-					for (int i = 0; i < player[com.front().id].keyComs.size(); i++)
+					for (int i = 0; i < player.size(); i++)
 					{
-						if (player[com.front().id].keyComs[i].type == PING) {
-							player[com.front().id].keyComs.erase(player[com.front().id].keyComs.begin());
+						if (com.front().accum.id == player[i].id) {	// el jugador que diu Hello
+							OutputMemoryBitStream output;
+							output.Write(HELLO, TYPE_SIZE);
+							output.Write(player[i].id, ACCUM_DELTA_SIZE);
+							sender.SendMessages(player[i].ip, player[i].port, output.GetBufferPtr(), output.GetByteLength());
+
+							std::cout << std::endl << "New Player " << player[i].id;
+
 							break;
 						}
 					}
-					com.pop();
 
+					com.pop();
 				}
-					break;
+							break;
+				case SEARCH:
+				{
+					int id = com.front().id;
 
-				case DISCONNECTION: {
-					OutputMemoryBitStream output;
-					output.Write(PING, TYPE_SIZE);
-					output.Write(com.front().id, ID_SIZE);
-					//bool foundMessage = false;									// Per saber si hi ha un misatge igual
-					for (int k = 0; k < player.size(); k++)
+					for (int i = 0; i < player.size(); i++)
 					{
-						sender.SendMessages(player[k].ip, player[k].port, output.GetBufferPtr(), output.GetByteLength());
+						if (player[i].id == id)
+						{
+							waiting.push_back(player[i]);
+							break;
+						}
 					}
-					player.erase(player.begin() + com.front().id);
-					state = connect;
-					com.pop();
 
+					timerMatch.Start(5000); // reiniciem contador matchmaking
+
+					com.pop();
 				}
 				break;
-				case MOVEMENT: {
+				case CONNECTION:
+				{
+					int matchid;
+					for (int i = 0; i < playing.size(); i++) // Busca el matchid i desconectar jugador
+					{
+						if (playing[i].id == com.front().id)
+						{
+							matchid = playing[i].matchId;
+							player[i].ready = true;
+							for (int j = i; j < playing.size(); j++)
+							{
+								if (j != i && playing[j].matchId == matchid /*&& player[j].ready*/)
+								{
+									OutputMemoryBitStream output;
+									output.Write(PLAY, TYPE_SIZE);
+									std::cout << std::endl << "Comencen a jugar " << playing[i].id << " i " << playing[j].id;
+									sender.SendMessages(playing[i].ip, playing[i].port, output.GetBufferPtr(), output.GetByteLength());
+									sender.SendMessages(playing[j].ip, playing[j].port, output.GetBufferPtr(), output.GetByteLength());
+									break;
+								}
+							}
+							break;
+						}
+					}
+
+					/*for (int i = 0; i < playing.size(); i++)
+					{
+						if (playing[i].matchId == matchid)
+						{
+							playing[i].ready = true;
+							for (int j = 0; j < playing.size(); j++)
+							{
+								if (i != j && playing[i].ready == playing[j].ready)
+								{
+									OutputMemoryBitStream output;
+									output.Write(PLAY, TYPE_SIZE);
+									std::cout << std::endl << "Comencen a jugar " << playing[i].id << " i " << playing[j].id;
+									sender.SendMessages(playing[i].ip, playing[i].port, output.GetBufferPtr(), output.GetByteLength());
+									sender.SendMessages(playing[j].ip, playing[j].port, output.GetBufferPtr(), output.GetByteLength());
+								}
+							}
+							break;
+						}
+					}*/
+					com.pop();
+				}
+				break;
+				case MOVEMENT:
+				{
 					Accum accumtmp = com.front().accum;
 
 					int threshold = 6; // Maximum error able to forgive
@@ -490,77 +210,181 @@ int main()
 					//accumtmp.absolute = player[com.front().id].x + accumtmp.delta;
 
 					com.pop();
-					
+
 				}
-							   break;
+				break;
 				case ATTACK: {
 
-					if (player[com.front().id].attack == 0)
+					int matchid, id1, id2;
+					
+					for (int i = 0; i < playing.size(); i++) // Busca el matchid i desconectar jugador
 					{
-						player[com.front().id].attack = com.front().position;
-
-						OutputMemoryBitStream output;
-						output.Write(ATTACK, TYPE_SIZE);
-						output.Write(player[com.front().id].id, ID_SIZE);
-						output.Write(player[com.front().id].attack, ATTACK_SIZE);
-
-						if (com.front().id == 0)
+						if (playing[i].id == com.front().id)
 						{
-							sender.SendMessages(player[1].ip, player[1].port, output.GetBufferPtr(), output.GetByteLength());
-						}
-						else 
-						{
-							sender.SendMessages(player[0].ip, player[0].port, output.GetBufferPtr(), output.GetByteLength());
-						}
-							
-						com.pop();
-					}
-					else
-					{
-						int distance = player[0].x - player[1].x;
-						if (distance < 0) distance = -distance;
-						if (distance < DISTANCE_ATTACK)
-						{
-							player[com.front().id].score++;
-
-							player[0].x = player[0].originalX;
-							player[1].x = player[1].originalX;							
+							id1 = playing[i].id;
+							matchid = playing[i].matchId;
 
 							OutputMemoryBitStream output;
-							output.Write(SCORE, TYPE_SIZE);
-							output.Write(player[com.front().id].id, ID_SIZE);
-
-							if (!com.empty())
-							{
-								while (!com.empty())
-								{
-									com.pop();
-								}
-							}
-
-							for (int k = 0; k < player.size(); k++)
-							{
-								sender.SendMessages(player[k].ip, player[k].port, output.GetBufferPtr(), output.GetByteLength());
-							}
+							output.Write(DISCONNECTION, TYPE_SIZE);
+							sender.SendMessages(playing[i].ip, playing[i].port, output.GetBufferPtr(), output.GetByteLength());
+							playing.erase(playing.begin() + i);
+							break;
 						}
-						else
-						{
-							com.pop();
-						}
-						player[com.front().id].attack = 0;
-						//player[1].attack = 0;
 					}
-					
+
+					for (int i = 0; i < playing.size(); i++) // Busca el contrincant i desconectarlo
+					{
+						if (playing[i].id != com.front().id && playing[i].matchId == matchid)
+						{
+							id2 = playing[i].id;
+							OutputMemoryBitStream output;
+							output.Write(DISCONNECTION, TYPE_SIZE);
+							sender.SendMessages(playing[i].ip, playing[i].port, output.GetBufferPtr(), output.GetByteLength());
+							playing.erase(playing.begin() + i);
+						}
+					}
+
+					for (int i = 0; i < player.size(); i++)
+					{
+						if (player[i].id == id1 || player[i].id == id2)
+						{
+							player[i].ready = false;
+						}
+					}
+
+					com.pop();
+
 				}
-					break;
+							 break;
+				case DISCONNECTION: {
+
+					int matchid;
+					int id1, id2;
+					for (int i = 0; i < playing.size(); i++) // Busca el matchid
+					{
+						if (playing[i].id == com.front().id)
+						{
+							matchid = playing[i].matchId;
+							playing.erase(playing.begin() + i);
+							id1 = playing[i].id;
+							break;
+						}
+					}
+
+					for (int i = 0; i < playing.size(); i++) // Busca el contrincant
+					{
+						if (playing[i].id != com.front().id && playing[i].matchId == matchid)
+						{
+							id2 = playing[i].id;
+							OutputMemoryBitStream output;
+							output.Write(DISCONNECTION, TYPE_SIZE);
+							sender.SendMessages(playing[i].ip, playing[i].port, output.GetBufferPtr(), output.GetByteLength());
+							playing.erase(playing.begin() + i);
+							break;
+						}
+					}
+
+					for (int i = 0; i < player.size(); i++) // elimina el que ha marxat
+					{
+						if (player[i].id == id1)
+						{
+							player.erase(player.begin() + i);
+							break;
+						}
+					}
+
+					for (int i = 0; i < player.size(); i++)
+					{
+						if (player[i].id == id2)
+						{
+							player[i].ready = false;
+						}
+					}
+
+					com.pop();
+
+				}
+				break;
 				}
 			}
+			if (timerMatch.Check() && waiting.size() >= TOTALPLAYERS) { // Si existeixen mes de 2 jugadors
+
+				int idmatch = -1;
+				int bestScore = 100;
+				//for (int i = 0; i < waiting.size(); i++) // Matchmaking
+				//{
+					for (int j = 1; j < waiting.size(); j++)
+					{
+						int absoluteScore = waiting[0].score - waiting[j].score;
+						if (absoluteScore < 0) absoluteScore = -absoluteScore;
+						if (absoluteScore < bestScore) {
+							bestScore = absoluteScore;
+							idmatch = j;
+						}
+					}
+					if (idmatch != -1)
+					{
+						//waiting[0].id = 0;
+						waiting[0].x = 270;
+						waiting[0].matchId = matchNum;
+						playing.push_back(waiting[0]);
+
+						//waiting[idmatch].id = 1;
+						waiting[idmatch].x = 800;
+						waiting[idmatch].matchId = matchNum;
+						playing.push_back(waiting[idmatch]);
+
+						OutputMemoryBitStream output1;
+						output1.Write(CONNECTION, TYPE_SIZE);
+						output1.Write(0, ID_SIZE); // 0 per ser la propia
+						output1.Write(waiting[0].id, ACCUM_DELTA_SIZE);
+						output1.Write(waiting[0].x, POSITION_SIZE);
+						sender.SendMessages(waiting[0].ip, waiting[0].port, output1.GetBufferPtr(), output1.GetByteLength());
+
+						OutputMemoryBitStream output2;
+						output2.Write(CONNECTION, TYPE_SIZE);
+						output2.Write(0, ID_SIZE); // 0 per ser la propia
+						output2.Write(waiting[idmatch].id, ACCUM_DELTA_SIZE);
+						output2.Write(waiting[idmatch].x, POSITION_SIZE);
+						sender.SendMessages(waiting[idmatch].ip, waiting[idmatch].port, output2.GetBufferPtr(), output2.GetByteLength());
+
+						OutputMemoryBitStream output3;
+						output3.Write(CONNECTION, TYPE_SIZE);
+						output3.Write(1, ID_SIZE);
+						output3.Write(waiting[0].id, ACCUM_DELTA_SIZE);
+						output3.Write(waiting[0].x, POSITION_SIZE);
+						sender.SendMessages(waiting[idmatch].ip, waiting[idmatch].port, output3.GetBufferPtr(), output3.GetByteLength());
+
+						OutputMemoryBitStream output4;
+						output4.Write(CONNECTION, TYPE_SIZE);
+						output4.Write(1, ID_SIZE);
+						output4.Write(waiting[idmatch].id, ACCUM_DELTA_SIZE);
+						output4.Write(waiting[idmatch].x, POSITION_SIZE);
+						sender.SendMessages(waiting[0].ip, waiting[0].port, output4.GetBufferPtr(), output4.GetByteLength());
+
+						waiting.erase(waiting.begin() + idmatch);
+						waiting.erase(waiting.begin());
+
+						std::cout << "Set match " << matchNum << std::endl;
+
+						matchNum++;
+
+
+						break;
+					}
+				//}
+				timerMatch.Start(5000);
+			}
 		}
-			break;
+					  break;
+
 		}
+
 		mutex.unlock();
 	}
+
 	receiver.stopReceive = false;
 	thread.terminate();
 	return 0;
+
 }
